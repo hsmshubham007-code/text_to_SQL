@@ -1,5 +1,6 @@
 """Validate and safely execute read-only SQLite queries."""
 
+import re
 import sqlite3
 from pathlib import Path
 
@@ -16,6 +17,10 @@ def validate_sql(sql: str) -> str:
     """Allow one read-only query and enforce a maximum result size."""
     if not sql or not sql.strip():
         raise ValueError("SQL query cannot be empty.")
+
+    # Reject the malformed keyword/table combination seen in model output.
+    if re.search(r"\bFROM(?=[A-Za-z_])", sql, re.IGNORECASE):
+        raise ValueError("Invalid SQL syntax: missing space after FROM.")
 
     try:
         statements = sqlglot.parse(sql, read="sqlite")

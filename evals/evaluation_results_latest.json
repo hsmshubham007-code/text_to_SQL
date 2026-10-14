@@ -1,0 +1,1006 @@
+{
+  "timestamp_utc": "2026-10-14T09:53:43.978990+00:00",
+  "questions_evaluated": 35,
+  "answerable": {
+    "total": 30,
+    "passed": 8,
+    "incorrect_results": 1,
+    "errors": 21,
+    "accuracy": 0.2667
+  },
+  "unanswerable": {
+    "total": 5,
+    "refusal_passed": 5,
+    "refusal_failed": 0,
+    "refusal_support_implemented": true
+  },
+  "failure_counts": {
+    "incorrect_result": 1,
+    "error": 21
+  },
+  "elapsed_seconds": 59.13,
+  "results": [
+    {
+      "id": "Q001",
+      "question": "Show the first five customers alphabetically by last name.",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT CustomerId, FirstName, LastName FROM Customer ORDER BY LastName, CustomerId LIMIT 5",
+      "expected_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName"
+      ],
+      "actual_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName"
+      ],
+      "expected_rows": [
+        [
+          12,
+          "Roberto",
+          "Almeida"
+        ],
+        [
+          28,
+          "Julia",
+          "Barnett"
+        ],
+        [
+          39,
+          "Camille",
+          "Bernard"
+        ],
+        [
+          18,
+          "Michelle",
+          "Brooks"
+        ],
+        [
+          29,
+          "Robert",
+          "Brown"
+        ]
+      ],
+      "actual_rows": [
+        [
+          12,
+          "Roberto",
+          "Almeida"
+        ],
+        [
+          28,
+          "Julia",
+          "Barnett"
+        ],
+        [
+          39,
+          "Camille",
+          "Bernard"
+        ],
+        [
+          18,
+          "Michelle",
+          "Brooks"
+        ],
+        [
+          29,
+          "Robert",
+          "Brown"
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q002",
+      "question": "How many customers are in the database?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT COUNT(*) AS customer_count FROM Customer LIMIT 100",
+      "expected_columns": [
+        "customer_count"
+      ],
+      "actual_columns": [
+        "customer_count"
+      ],
+      "expected_rows": [
+        [
+          59
+        ]
+      ],
+      "actual_rows": [
+        [
+          59
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q003",
+      "question": "How many tracks are in the music catalog?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT COUNT(*) AS track_count FROM Track LIMIT 100",
+      "expected_columns": [
+        "track_count"
+      ],
+      "actual_columns": [
+        "track_count"
+      ],
+      "expected_rows": [
+        [
+          3503
+        ]
+      ],
+      "actual_rows": [
+        [
+          3503
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q004",
+      "question": "Show five albums and the artists who created them.",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Album.Title AS album, Artist.Name AS artist FROM Album JOIN Artist ON Album.ArtistId = Artist.ArtistId ORDER BY Album.Title LIMIT 5",
+      "expected_columns": [
+        "album",
+        "artist"
+      ],
+      "actual_columns": [
+        "album",
+        "artist"
+      ],
+      "expected_rows": [
+        [
+          "...And Justice For All",
+          "Metallica"
+        ],
+        [
+          "20th Century Masters - The Millennium Collection: The Best of Scorpions",
+          "Scorpions"
+        ],
+        [
+          "A Copland Celebration, Vol. I",
+          "Aaron Copland & London Symphony Orchestra"
+        ],
+        [
+          "A Matter of Life and Death",
+          "Iron Maiden"
+        ],
+        [
+          "A Real Dead One",
+          "Iron Maiden"
+        ]
+      ],
+      "actual_rows": [
+        [
+          "...And Justice For All",
+          "Metallica"
+        ],
+        [
+          "20th Century Masters - The Millennium Collection: The Best of Scorpions",
+          "Scorpions"
+        ],
+        [
+          "A Copland Celebration, Vol. I",
+          "Aaron Copland & London Symphony Orchestra"
+        ],
+        [
+          "A Matter of Life and Death",
+          "Iron Maiden"
+        ],
+        [
+          "A Real Dead One",
+          "Iron Maiden"
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q005",
+      "question": "List all employees by last name.",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT EmployeeId, FirstName, LastName, Title FROM Employee ORDER BY LastName, EmployeeId LIMIT 100",
+      "expected_columns": [
+        "EmployeeId",
+        "FirstName",
+        "LastName",
+        "Title"
+      ],
+      "actual_columns": [
+        "EmployeeId",
+        "FirstName",
+        "LastName",
+        "Title"
+      ],
+      "expected_rows": [
+        [
+          1,
+          "Andrew",
+          "Adams",
+          "General Manager"
+        ],
+        [
+          8,
+          "Laura",
+          "Callahan",
+          "IT Staff"
+        ],
+        [
+          2,
+          "Nancy",
+          "Edwards",
+          "Sales Manager"
+        ],
+        [
+          5,
+          "Steve",
+          "Johnson",
+          "Sales Support Agent"
+        ],
+        [
+          7,
+          "Robert",
+          "King",
+          "IT Staff"
+        ],
+        [
+          6,
+          "Michael",
+          "Mitchell",
+          "IT Manager"
+        ],
+        [
+          4,
+          "Margaret",
+          "Park",
+          "Sales Support Agent"
+        ],
+        [
+          3,
+          "Jane",
+          "Peacock",
+          "Sales Support Agent"
+        ]
+      ],
+      "actual_rows": [
+        [
+          1,
+          "Andrew",
+          "Adams",
+          "General Manager"
+        ],
+        [
+          8,
+          "Laura",
+          "Callahan",
+          "IT Staff"
+        ],
+        [
+          2,
+          "Nancy",
+          "Edwards",
+          "Sales Manager"
+        ],
+        [
+          5,
+          "Steve",
+          "Johnson",
+          "Sales Support Agent"
+        ],
+        [
+          7,
+          "Robert",
+          "King",
+          "IT Staff"
+        ],
+        [
+          6,
+          "Michael",
+          "Mitchell",
+          "IT Manager"
+        ],
+        [
+          4,
+          "Margaret",
+          "Park",
+          "Sales Support Agent"
+        ],
+        [
+          3,
+          "Jane",
+          "Peacock",
+          "Sales Support Agent"
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q006",
+      "question": "Which customers live in Canada?",
+      "answerable": true,
+      "status": "FAIL",
+      "failure_category": "incorrect_result",
+      "generated_sql": "SELECT CustomerId, FirstName, LastName, City FROM Customer WHERE Country = 'Canada' LIMIT 100",
+      "expected_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "City"
+      ],
+      "actual_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "City"
+      ],
+      "expected_rows": [
+        [
+          29,
+          "Robert",
+          "Brown",
+          "Toronto"
+        ],
+        [
+          30,
+          "Edward",
+          "Francis",
+          "Ottawa"
+        ],
+        [
+          32,
+          "Aaron",
+          "Mitchell",
+          "Winnipeg"
+        ],
+        [
+          15,
+          "Jennifer",
+          "Peterson",
+          "Vancouver"
+        ],
+        [
+          14,
+          "Mark",
+          "Philips",
+          "Edmonton"
+        ],
+        [
+          31,
+          "Martha",
+          "Silk",
+          "Halifax"
+        ],
+        [
+          33,
+          "Ellie",
+          "Sullivan",
+          "Yellowknife"
+        ],
+        [
+          3,
+          "François",
+          "Tremblay",
+          "Montréal"
+        ]
+      ],
+      "actual_rows": [
+        [
+          3,
+          "François",
+          "Tremblay",
+          "Montréal"
+        ],
+        [
+          14,
+          "Mark",
+          "Philips",
+          "Edmonton"
+        ],
+        [
+          15,
+          "Jennifer",
+          "Peterson",
+          "Vancouver"
+        ],
+        [
+          29,
+          "Robert",
+          "Brown",
+          "Toronto"
+        ],
+        [
+          30,
+          "Edward",
+          "Francis",
+          "Ottawa"
+        ],
+        [
+          31,
+          "Martha",
+          "Silk",
+          "Halifax"
+        ],
+        [
+          32,
+          "Aaron",
+          "Mitchell",
+          "Winnipeg"
+        ],
+        [
+          33,
+          "Ellie",
+          "Sullivan",
+          "Yellowknife"
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q007",
+      "question": "Show five tracks priced at 99 cents.",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT TrackId, Name, UnitPrice FROM Track WHERE UnitPrice = 0.99 ORDER BY Name LIMIT 5",
+      "expected_columns": [
+        "TrackId",
+        "Name",
+        "UnitPrice"
+      ],
+      "actual_columns": [
+        "TrackId",
+        "Name",
+        "UnitPrice"
+      ],
+      "expected_rows": [
+        [
+          3027,
+          "\"40\"",
+          0.99
+        ],
+        [
+          3412,
+          "\"Eine Kleine Nachtmusik\" Serenade In G, K. 525: I. Allegro",
+          0.99
+        ],
+        [
+          109,
+          "#1 Zero",
+          0.99
+        ],
+        [
+          3254,
+          "#9 Dream",
+          0.99
+        ],
+        [
+          602,
+          "'Round Midnight",
+          0.99
+        ]
+      ],
+      "actual_rows": [
+        [
+          3027,
+          "\"40\"",
+          0.99
+        ],
+        [
+          3412,
+          "\"Eine Kleine Nachtmusik\" Serenade In G, K. 525: I. Allegro",
+          0.99
+        ],
+        [
+          109,
+          "#1 Zero",
+          0.99
+        ],
+        [
+          3254,
+          "#9 Dream",
+          0.99
+        ],
+        [
+          602,
+          "'Round Midnight",
+          0.99
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q008",
+      "question": "How many invoices were issued in 2012?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT COUNT(*) AS invoice_count FROM Invoice WHERE InvoiceDate >= '2012-01-01' AND InvoiceDate < '2013-01-01' LIMIT 100",
+      "expected_columns": [
+        "invoice_count"
+      ],
+      "actual_columns": [
+        "invoice_count"
+      ],
+      "expected_rows": [
+        [
+          0
+        ]
+      ],
+      "actual_rows": [
+        [
+          0
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q009",
+      "question": "Which five customers have the highest total invoice spending?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName, ROUND(SUM(Invoice.Total), 2) AS total_spending FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY Customer.CustomerId, Customer.FirstName, Customer.LastName ORDER BY total_spending DESC, Customer.CustomerId LIMIT 5",
+      "expected_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "total_spending"
+      ],
+      "actual_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "total_spending"
+      ],
+      "expected_rows": [
+        [
+          6,
+          "Helena",
+          "Holý",
+          49.62
+        ],
+        [
+          26,
+          "Richard",
+          "Cunningham",
+          47.62
+        ],
+        [
+          57,
+          "Luis",
+          "Rojas",
+          46.62
+        ],
+        [
+          45,
+          "Ladislav",
+          "Kovács",
+          45.62
+        ],
+        [
+          46,
+          "Hugh",
+          "O'Reilly",
+          45.62
+        ]
+      ],
+      "actual_rows": [
+        [
+          6,
+          "Helena",
+          "Holý",
+          49.62
+        ],
+        [
+          26,
+          "Richard",
+          "Cunningham",
+          47.62
+        ],
+        [
+          57,
+          "Luis",
+          "Rojas",
+          46.62
+        ],
+        [
+          45,
+          "Ladislav",
+          "Kovács",
+          45.62
+        ],
+        [
+          46,
+          "Hugh",
+          "O'Reilly",
+          45.62
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q010",
+      "question": "What was the total invoice revenue for each month of 2013?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199880, Requested 2543. Please try again in 17m26.736s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q011",
+      "question": "Which five billing countries generated the most invoice revenue?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199878, Requested 2413. Please try again in 16m29.712s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q012",
+      "question": "Which five music genres have the most tracks?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199875, Requested 2386. Please try again in 16m16.752s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q013",
+      "question": "Which five artists have the most albums?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199872, Requested 2411. Please try again in 16m26.256s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q014",
+      "question": "What is the average track length in minutes for each of the five longest-average genres?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199870, Requested 2546. Please try again in 17m23.712s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q015",
+      "question": "Which five artists generated the most revenue from sold tracks?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199867, Requested 2414. Please try again in 16m25.392s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q016",
+      "question": "Show five tracks that have never appeared on an invoice.",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199865, Requested 2540. Please try again in 17m18.96s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q017",
+      "question": "Which customers have never received an invoice?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199862, Requested 2411. Please try again in 16m21.936s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q018",
+      "question": "Which five tracks have sold the most units?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199859, Requested 2386. Please try again in 16m9.84s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q019",
+      "question": "How much line-item revenue has each genre generated?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199857, Requested 2539. Please try again in 17m15.071999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q020",
+      "question": "How many customers does each employee support?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199854, Requested 2411. Please try again in 16m18.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q021",
+      "question": "How many invoices were issued in each year?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199852, Requested 2538. Please try again in 17m12.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q022",
+      "question": "What is the average invoice total?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199849, Requested 2410. Please try again in 16m15.887999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q023",
+      "question": "Show the five most expensive tracks.",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199846, Requested 2536. Please try again in 17m9.024s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q024",
+      "question": "Which five playlists contain the most tracks?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199844, Requested 2537. Please try again in 17m8.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q025",
+      "question": "Which albums contain more than 20 tracks?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199841, Requested 2412. Please try again in 16m13.296s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q026",
+      "question": "Which customers have spent more than 40 dollars in total invoice amounts?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199839, Requested 2417. Please try again in 16m14.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q027",
+      "question": "Show five tracks whose composer is not recorded.",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199836, Requested 2412. Please try again in 16m11.136s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q028",
+      "question": "How many invoices have a total greater than 10 dollars?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199833, Requested 2389. Please try again in 15m59.904s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q029",
+      "question": "Show the five customers with the most invoices, including their invoice counts.",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199831, Requested 2391. Please try again in 15m59.904s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q030",
+      "question": "How much revenue has each media type generated from sold tracks?",
+      "answerable": true,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199829, Requested 2541. Please try again in 17m3.839999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "refusal": null
+    },
+    {
+      "id": "Q031",
+      "question": "How many physical copies of each track are currently in warehouse inventory?",
+      "answerable": false,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": null,
+      "refusal": "The database has no warehouse inventory or stock quantity data."
+    },
+    {
+      "id": "Q032",
+      "question": "What is each customer's age today?",
+      "answerable": false,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": null,
+      "refusal": "The database has no customer date-of-birth data."
+    },
+    {
+      "id": "Q033",
+      "question": "What is the customer satisfaction score for each support representative?",
+      "answerable": false,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": null,
+      "refusal": "The database has no customer satisfaction or survey score data."
+    },
+    {
+      "id": "Q034",
+      "question": "Which support tickets are unresolved and how long have they been open?",
+      "answerable": false,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": null,
+      "refusal": "The database has no support ticket records or ticket status data."
+    },
+    {
+      "id": "Q035",
+      "question": "Which marketing campaign generated the highest return on investment?",
+      "answerable": false,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": null,
+      "refusal": "The database has no marketing campaign cost or attribution data."
+    }
+  ]
+}
