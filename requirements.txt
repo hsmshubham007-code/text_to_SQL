@@ -1,0 +1,5 @@
+langchain-groq
+sqlglot
+streamlit
+pytest
+python-dotenv

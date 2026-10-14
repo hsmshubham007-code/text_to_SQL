@@ -1,0 +1,223 @@
+
+[
+  {
+    "id": "Q001",
+    "question": "Show the first five customers alphabetically by last name.",
+    "answerable": true,
+    "expected_sql": "SELECT CustomerId, FirstName, LastName FROM Customer ORDER BY LastName, FirstName LIMIT 5"
+  },
+  {
+    "id": "Q002",
+    "question": "How many customers are in the database?",
+    "answerable": true,
+    "expected_sql": "SELECT COUNT(*) AS customer_count FROM Customer"
+  },
+  {
+    "id": "Q003",
+    "question": "How many tracks are in the music catalog?",
+    "answerable": true,
+    "expected_sql": "SELECT COUNT(*) AS track_count FROM Track"
+  },
+  {
+    "id": "Q004",
+    "question": "Show five albums and the artists who created them.",
+    "answerable": true,
+    "expected_sql": "SELECT Album.Title AS album, Artist.Name AS artist FROM Album JOIN Artist ON Album.ArtistId = Artist.ArtistId ORDER BY Album.Title LIMIT 5"
+  },
+  {
+    "id": "Q005",
+    "question": "List all employees by last name.",
+    "answerable": true,
+    "expected_sql": "SELECT EmployeeId, FirstName, LastName, Title FROM Employee ORDER BY LastName"
+  },
+  {
+    "id": "Q006",
+    "question": "Which customers live in Canada?",
+    "answerable": true,
+    "expected_sql": "SELECT CustomerId, FirstName, LastName, City FROM Customer WHERE Country = 'Canada' ORDER BY LastName, FirstName"
+  },
+  {
+    "id": "Q007",
+    "question": "Show five tracks priced at 99 cents.",
+    "answerable": true,
+    "expected_sql": "SELECT TrackId, Name, UnitPrice FROM Track WHERE UnitPrice = 0.99 ORDER BY Name LIMIT 5"
+  },
+  {
+    "id": "Q008",
+    "question": "How many invoices were issued in 2012?",
+    "answerable": true,
+    "expected_sql": "SELECT COUNT(*) AS invoice_count FROM Invoice WHERE InvoiceDate >= '2012-01-01' AND InvoiceDate < '2013-01-01'"
+  },
+  {
+    "id": "Q009",
+    "question": "Which five customers have the highest total invoice spending?",
+    "answerable": true,
+    "expected_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName, ROUND(SUM(Invoice.Total), 2) AS total_spending FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY Customer.CustomerId, Customer.FirstName, Customer.LastName ORDER BY total_spending DESC, Customer.CustomerId LIMIT 5"
+  },
+  {
+    "id": "Q010",
+    "question": "What was the total invoice revenue for each month of 2013?",
+    "answerable": true,
+    "expected_sql": "SELECT strftime('%Y-%m', InvoiceDate) AS month, ROUND(SUM(Total), 2) AS revenue FROM Invoice WHERE InvoiceDate >= '2013-01-01' AND InvoiceDate < '2014-01-01' GROUP BY strftime('%Y-%m', InvoiceDate) ORDER BY month"
+  },
+  {
+    "id": "Q011",
+    "question": "Which five billing countries generated the most invoice revenue?",
+    "answerable": true,
+    "expected_sql": "SELECT BillingCountry AS country, ROUND(SUM(Total), 2) AS revenue FROM Invoice GROUP BY BillingCountry ORDER BY revenue DESC, country LIMIT 5"
+  },
+  {
+    "id": "Q012",
+    "question": "Which five music genres have the most tracks?",
+    "answerable": true,
+    "expected_sql": "SELECT Genre.Name AS genre, COUNT(Track.TrackId) AS track_count FROM Genre JOIN Track ON Genre.GenreId = Track.GenreId GROUP BY Genre.GenreId, Genre.Name ORDER BY track_count DESC, genre LIMIT 5"
+  },
+  {
+    "id": "Q013",
+    "question": "Which five artists have the most albums?",
+    "answerable": true,
+    "expected_sql": "SELECT Artist.Name AS artist, COUNT(Album.AlbumId) AS album_count FROM Artist JOIN Album ON Artist.ArtistId = Album.ArtistId GROUP BY Artist.ArtistId, Artist.Name ORDER BY album_count DESC, artist LIMIT 5"
+  },
+  {
+    "id": "Q014",
+    "question": "What is the average track length in minutes for each of the five longest-average genres?",
+    "answerable": true,
+    "expected_sql": "SELECT Genre.Name AS genre, ROUND(AVG(Track.Milliseconds) / 60000.0, 2) AS average_minutes FROM Genre JOIN Track ON Genre.GenreId = Track.GenreId GROUP BY Genre.GenreId, Genre.Name ORDER BY average_minutes DESC, genre LIMIT 5"
+  },
+  {
+    "id": "Q015",
+    "question": "Which five artists generated the most revenue from sold tracks?",
+    "answerable": true,
+    "expected_sql": "SELECT Artist.Name AS artist, ROUND(SUM(InvoiceLine.UnitPrice * InvoiceLine.Quantity), 2) AS revenue FROM Artist JOIN Album ON Artist.ArtistId = Album.ArtistId JOIN Track ON Album.AlbumId = Track.AlbumId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId GROUP BY Artist.ArtistId, Artist.Name ORDER BY revenue DESC, artist LIMIT 5"
+  },
+  {
+    "id": "Q016",
+    "question": "Show five tracks that have never appeared on an invoice.",
+    "answerable": true,
+    "expected_sql": "SELECT Track.TrackId, Track.Name FROM Track LEFT JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId WHERE InvoiceLine.InvoiceLineId IS NULL ORDER BY Track.Name LIMIT 5"
+  },
+  {
+    "id": "Q017",
+    "question": "Which customers have never received an invoice?",
+    "answerable": true,
+    "expected_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName FROM Customer LEFT JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId WHERE Invoice.InvoiceId IS NULL ORDER BY Customer.LastName, Customer.FirstName"
+  },
+  {
+    "id": "Q018",
+    "question": "Which five tracks have sold the most units?",
+    "answerable": true,
+    "expected_sql": "SELECT Track.Name AS track, SUM(InvoiceLine.Quantity) AS units_sold FROM Track JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId GROUP BY Track.TrackId, Track.Name ORDER BY units_sold DESC, track LIMIT 5"
+  },
+  {
+    "id": "Q019",
+    "question": "How much line-item revenue has each genre generated?",
+    "answerable": true,
+    "expected_sql": "SELECT Genre.Name AS genre, ROUND(SUM(InvoiceLine.UnitPrice * InvoiceLine.Quantity), 2) AS revenue FROM Genre JOIN Track ON Genre.GenreId = Track.GenreId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId GROUP BY Genre.GenreId, Genre.Name ORDER BY revenue DESC, genre"
+  },
+  {
+    "id": "Q020",
+    "question": "How many customers does each employee support?",
+    "answerable": true,
+    "expected_sql": "SELECT Employee.EmployeeId, Employee.FirstName, Employee.LastName, COUNT(Customer.CustomerId) AS customer_count FROM Employee LEFT JOIN Customer ON Employee.EmployeeId = Customer.SupportRepId GROUP BY Employee.EmployeeId, Employee.FirstName, Employee.LastName ORDER BY customer_count DESC, Employee.LastName"
+  },
+  {
+    "id": "Q021",
+    "question": "How many invoices were issued in each year?",
+    "answerable": true,
+    "expected_sql": "SELECT strftime('%Y', InvoiceDate) AS year, COUNT(*) AS invoice_count FROM Invoice GROUP BY strftime('%Y', InvoiceDate) ORDER BY year"
+  },
+  {
+    "id": "Q022",
+    "question": "What is the average invoice total?",
+    "answerable": true,
+    "expected_sql": "SELECT ROUND(AVG(Total), 2) AS average_invoice_total FROM Invoice"
+  },
+  {
+    "id": "Q023",
+    "question": "Show the five most expensive tracks.",
+    "answerable": true,
+    "expected_sql": "SELECT Name, UnitPrice FROM Track ORDER BY UnitPrice DESC, Name LIMIT 5"
+  },
+  {
+    "id": "Q024",
+    "question": "Which five playlists contain the most tracks?",
+    "answerable": true,
+    "expected_sql": "SELECT Playlist.Name AS playlist, COUNT(PlaylistTrack.TrackId) AS track_count FROM Playlist LEFT JOIN PlaylistTrack ON Playlist.PlaylistId = PlaylistTrack.PlaylistId GROUP BY Playlist.PlaylistId, Playlist.Name ORDER BY track_count DESC, playlist LIMIT 5"
+  },
+  {
+    "id": "Q025",
+    "question": "Which albums contain more than 20 tracks?",
+    "answerable": true,
+    "expected_sql": "SELECT Album.Title AS album, COUNT(Track.TrackId) AS track_count FROM Album JOIN Track ON Album.AlbumId = Track.AlbumId GROUP BY Album.AlbumId, Album.Title HAVING COUNT(Track.TrackId) > 20 ORDER BY track_count DESC, album"
+  },
+  {
+    "id": "Q026",
+    "question": "Which customers have spent more than 40 dollars in total invoice amounts?",
+    "answerable": true,
+    "expected_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName, ROUND(SUM(Invoice.Total), 2) AS total_spending FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY Customer.CustomerId, Customer.FirstName, Customer.LastName HAVING SUM(Invoice.Total) > 40 ORDER BY total_spending DESC, Customer.LastName"
+  },
+  {
+    "id": "Q027",
+    "question": "Show five tracks whose composer is not recorded.",
+    "answerable": true,
+    "expected_sql": "SELECT TrackId, Name FROM Track WHERE Composer IS NULL ORDER BY Name LIMIT 5"
+  },
+  {
+    "id": "Q028",
+    "question": "How many invoices have a total greater than 10 dollars?",
+    "answerable": true,
+    "expected_sql": "SELECT COUNT(*) AS invoice_count FROM Invoice WHERE Total > 10"
+  },
+  {
+    "id": "Q029",
+    "question": "Show the five customers with the most invoices, including their invoice counts.",
+    "answerable": true,
+    "expected_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName, COUNT(Invoice.InvoiceId) AS invoice_count FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY Customer.CustomerId, Customer.FirstName, Customer.LastName ORDER BY invoice_count DESC, Customer.CustomerId LIMIT 5"
+  },
+  {
+    "id": "Q030",
+    "question": "How much revenue has each media type generated from sold tracks?",
+    "answerable": true,
+    "expected_sql": "SELECT MediaType.Name AS media_type, ROUND(SUM(InvoiceLine.UnitPrice * InvoiceLine.Quantity), 2) AS revenue FROM MediaType JOIN Track ON MediaType.MediaTypeId = Track.MediaTypeId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId GROUP BY MediaType.MediaTypeId, MediaType.Name ORDER BY revenue DESC, media_type"
+  },
+  {
+    "id": "Q031",
+    "question": "How many physical copies of each track are currently in warehouse inventory?",
+    "answerable": false,
+    "expected_sql": null,
+    "reason": "The database contains a digital music catalog and sales records, but no warehouse inventory or stock-quantity table.",
+    "expected_behavior": "Explain that current physical inventory cannot be determined from this database."
+  },
+  {
+    "id": "Q032",
+    "question": "What is each customer's age today?",
+    "answerable": false,
+    "expected_sql": null,
+    "reason": "Customer has no date-of-birth column. Employee birth dates cannot be used as customer birth dates.",
+    "expected_behavior": "Explain that customer ages cannot be calculated because customer birth dates are unavailable."
+  },
+  {
+    "id": "Q033",
+    "question": "What is the customer satisfaction score for each support representative?",
+    "answerable": false,
+    "expected_sql": null,
+    "reason": "The database has support representatives but no customer satisfaction surveys, scores, or feedback table.",
+    "expected_behavior": "Explain that customer satisfaction scores are not recorded in the available data."
+  },
+  {
+    "id": "Q034",
+    "question": "Which support tickets are unresolved and how long have they been open?",
+    "answerable": false,
+    "expected_sql": null,
+    "reason": "The database has no support ticket table, ticket status, or ticket creation timestamps.",
+    "expected_behavior": "Explain that support ticket status and resolution time cannot be determined."
+  },
+  {
+    "id": "Q035",
+    "question": "Which marketing campaign generated the highest return on investment?",
+    "answerable": false,
+    "expected_sql": null,
+    "reason": "The database does not record marketing campaigns, campaign costs, or campaign attribution.",
+    "expected_behavior": "Explain that campaign return on investment cannot be calculated from the available data."
+  }
+]
