@@ -16,6 +16,9 @@ Convert the user's natural-language question into exactly one valid SQLite query
 8. Match the requested output column order.
 9. For "five" or "top five", use LIMIT 5.
 10. For alphabetical results, order by the displayed name, not an ID.
+    If multiple rows can share that name, add a deterministic secondary
+    sort using another relevant displayed field.
+    For customers alphabetized by last name, use ORDER BY LastName, FirstName.
 11. For rankings, order by the requested measure first, then use a deterministic tie-breaker.
 12. Use explicit JOIN ... ON conditions.
 13. Use GROUP BY for non-aggregate selected fields and HAVING for aggregate conditions.

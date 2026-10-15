@@ -13,7 +13,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.database_tools import run_sql
-from src.sql_generator import ask_database
+from src.agent import ask_agent
 
 
 QUESTIONS_PATH = PROJECT_ROOT / "evals" / "questions.json"
@@ -74,7 +74,7 @@ def evaluate_question(item):
     }
 
     try:
-        response = ask_database(item["question"])
+        response = ask_agent(item["question"])
         result["generated_sql"] = response.get("sql")
         result["actual_columns"] = response.get("columns", [])
         result["actual_rows"] = response.get("rows", [])

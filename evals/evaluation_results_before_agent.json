@@ -1,0 +1,2324 @@
+{
+  "timestamp_utc": "2026-10-14T11:20:32.084348+00:00",
+  "questions_evaluated": 35,
+  "answerable": {
+    "total": 30,
+    "passed": 25,
+    "incorrect_results": 5,
+    "errors": 0,
+    "accuracy": 0.8333
+  },
+  "unanswerable": {
+    "total": 5,
+    "refusal_passed": 5,
+    "refusal_failed": 0,
+    "refusal_support_implemented": true
+  },
+  "failure_counts": {
+    "incorrect_result": 4,
+    "incorrect_columns": 1
+  },
+  "elapsed_seconds": 449.67,
+  "results": [
+    {
+      "id": "Q001",
+      "question": "Show the first five customers alphabetically by last name.",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT CustomerId, FirstName, LastName FROM Customer ORDER BY LastName LIMIT 5",
+      "expected_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName"
+      ],
+      "actual_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName"
+      ],
+      "expected_rows": [
+        [
+          12,
+          "Roberto",
+          "Almeida"
+        ],
+        [
+          28,
+          "Julia",
+          "Barnett"
+        ],
+        [
+          39,
+          "Camille",
+          "Bernard"
+        ],
+        [
+          18,
+          "Michelle",
+          "Brooks"
+        ],
+        [
+          29,
+          "Robert",
+          "Brown"
+        ]
+      ],
+      "actual_rows": [
+        [
+          12,
+          "Roberto",
+          "Almeida"
+        ],
+        [
+          28,
+          "Julia",
+          "Barnett"
+        ],
+        [
+          39,
+          "Camille",
+          "Bernard"
+        ],
+        [
+          18,
+          "Michelle",
+          "Brooks"
+        ],
+        [
+          29,
+          "Robert",
+          "Brown"
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q002",
+      "question": "How many customers are in the database?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT COUNT(CustomerId) AS customer_count FROM Customer LIMIT 100",
+      "expected_columns": [
+        "customer_count"
+      ],
+      "actual_columns": [
+        "customer_count"
+      ],
+      "expected_rows": [
+        [
+          59
+        ]
+      ],
+      "actual_rows": [
+        [
+          59
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q003",
+      "question": "How many tracks are in the music catalog?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT COUNT(TrackId) AS track_count FROM Track LIMIT 100",
+      "expected_columns": [
+        "track_count"
+      ],
+      "actual_columns": [
+        "track_count"
+      ],
+      "expected_rows": [
+        [
+          3503
+        ]
+      ],
+      "actual_rows": [
+        [
+          3503
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q004",
+      "question": "Show five albums and the artists who created them.",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Album.Title AS album, Artist.Name AS artist FROM Album JOIN Artist ON Album.ArtistId = Artist.ArtistId ORDER BY Album.Title LIMIT 5",
+      "expected_columns": [
+        "album",
+        "artist"
+      ],
+      "actual_columns": [
+        "album",
+        "artist"
+      ],
+      "expected_rows": [
+        [
+          "...And Justice For All",
+          "Metallica"
+        ],
+        [
+          "20th Century Masters - The Millennium Collection: The Best of Scorpions",
+          "Scorpions"
+        ],
+        [
+          "A Copland Celebration, Vol. I",
+          "Aaron Copland & London Symphony Orchestra"
+        ],
+        [
+          "A Matter of Life and Death",
+          "Iron Maiden"
+        ],
+        [
+          "A Real Dead One",
+          "Iron Maiden"
+        ]
+      ],
+      "actual_rows": [
+        [
+          "...And Justice For All",
+          "Metallica"
+        ],
+        [
+          "20th Century Masters - The Millennium Collection: The Best of Scorpions",
+          "Scorpions"
+        ],
+        [
+          "A Copland Celebration, Vol. I",
+          "Aaron Copland & London Symphony Orchestra"
+        ],
+        [
+          "A Matter of Life and Death",
+          "Iron Maiden"
+        ],
+        [
+          "A Real Dead One",
+          "Iron Maiden"
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q005",
+      "question": "List all employees by last name.",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT EmployeeId, FirstName, LastName, Title FROM Employee ORDER BY LastName LIMIT 100",
+      "expected_columns": [
+        "EmployeeId",
+        "FirstName",
+        "LastName",
+        "Title"
+      ],
+      "actual_columns": [
+        "EmployeeId",
+        "FirstName",
+        "LastName",
+        "Title"
+      ],
+      "expected_rows": [
+        [
+          1,
+          "Andrew",
+          "Adams",
+          "General Manager"
+        ],
+        [
+          8,
+          "Laura",
+          "Callahan",
+          "IT Staff"
+        ],
+        [
+          2,
+          "Nancy",
+          "Edwards",
+          "Sales Manager"
+        ],
+        [
+          5,
+          "Steve",
+          "Johnson",
+          "Sales Support Agent"
+        ],
+        [
+          7,
+          "Robert",
+          "King",
+          "IT Staff"
+        ],
+        [
+          6,
+          "Michael",
+          "Mitchell",
+          "IT Manager"
+        ],
+        [
+          4,
+          "Margaret",
+          "Park",
+          "Sales Support Agent"
+        ],
+        [
+          3,
+          "Jane",
+          "Peacock",
+          "Sales Support Agent"
+        ]
+      ],
+      "actual_rows": [
+        [
+          1,
+          "Andrew",
+          "Adams",
+          "General Manager"
+        ],
+        [
+          8,
+          "Laura",
+          "Callahan",
+          "IT Staff"
+        ],
+        [
+          2,
+          "Nancy",
+          "Edwards",
+          "Sales Manager"
+        ],
+        [
+          5,
+          "Steve",
+          "Johnson",
+          "Sales Support Agent"
+        ],
+        [
+          7,
+          "Robert",
+          "King",
+          "IT Staff"
+        ],
+        [
+          6,
+          "Michael",
+          "Mitchell",
+          "IT Manager"
+        ],
+        [
+          4,
+          "Margaret",
+          "Park",
+          "Sales Support Agent"
+        ],
+        [
+          3,
+          "Jane",
+          "Peacock",
+          "Sales Support Agent"
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q006",
+      "question": "Which customers live in Canada?",
+      "answerable": true,
+      "status": "FAIL",
+      "failure_category": "incorrect_result",
+      "generated_sql": "SELECT CustomerId, FirstName, LastName, City FROM Customer WHERE Country = 'Canada' LIMIT 100",
+      "expected_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "City"
+      ],
+      "actual_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "City"
+      ],
+      "expected_rows": [
+        [
+          29,
+          "Robert",
+          "Brown",
+          "Toronto"
+        ],
+        [
+          30,
+          "Edward",
+          "Francis",
+          "Ottawa"
+        ],
+        [
+          32,
+          "Aaron",
+          "Mitchell",
+          "Winnipeg"
+        ],
+        [
+          15,
+          "Jennifer",
+          "Peterson",
+          "Vancouver"
+        ],
+        [
+          14,
+          "Mark",
+          "Philips",
+          "Edmonton"
+        ],
+        [
+          31,
+          "Martha",
+          "Silk",
+          "Halifax"
+        ],
+        [
+          33,
+          "Ellie",
+          "Sullivan",
+          "Yellowknife"
+        ],
+        [
+          3,
+          "François",
+          "Tremblay",
+          "Montréal"
+        ]
+      ],
+      "actual_rows": [
+        [
+          3,
+          "François",
+          "Tremblay",
+          "Montréal"
+        ],
+        [
+          14,
+          "Mark",
+          "Philips",
+          "Edmonton"
+        ],
+        [
+          15,
+          "Jennifer",
+          "Peterson",
+          "Vancouver"
+        ],
+        [
+          29,
+          "Robert",
+          "Brown",
+          "Toronto"
+        ],
+        [
+          30,
+          "Edward",
+          "Francis",
+          "Ottawa"
+        ],
+        [
+          31,
+          "Martha",
+          "Silk",
+          "Halifax"
+        ],
+        [
+          32,
+          "Aaron",
+          "Mitchell",
+          "Winnipeg"
+        ],
+        [
+          33,
+          "Ellie",
+          "Sullivan",
+          "Yellowknife"
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q007",
+      "question": "Show five tracks priced at 99 cents.",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT TrackId, Name, UnitPrice FROM Track WHERE UnitPrice = 0.99 ORDER BY Name LIMIT 5",
+      "expected_columns": [
+        "TrackId",
+        "Name",
+        "UnitPrice"
+      ],
+      "actual_columns": [
+        "TrackId",
+        "Name",
+        "UnitPrice"
+      ],
+      "expected_rows": [
+        [
+          3027,
+          "\"40\"",
+          0.99
+        ],
+        [
+          3412,
+          "\"Eine Kleine Nachtmusik\" Serenade In G, K. 525: I. Allegro",
+          0.99
+        ],
+        [
+          109,
+          "#1 Zero",
+          0.99
+        ],
+        [
+          3254,
+          "#9 Dream",
+          0.99
+        ],
+        [
+          602,
+          "'Round Midnight",
+          0.99
+        ]
+      ],
+      "actual_rows": [
+        [
+          3027,
+          "\"40\"",
+          0.99
+        ],
+        [
+          3412,
+          "\"Eine Kleine Nachtmusik\" Serenade In G, K. 525: I. Allegro",
+          0.99
+        ],
+        [
+          109,
+          "#1 Zero",
+          0.99
+        ],
+        [
+          3254,
+          "#9 Dream",
+          0.99
+        ],
+        [
+          602,
+          "'Round Midnight",
+          0.99
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q008",
+      "question": "How many invoices were issued in 2012?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT COUNT(InvoiceId) AS invoice_count FROM Invoice WHERE InvoiceDate >= '2012-01-01' AND InvoiceDate < '2013-01-01' LIMIT 100",
+      "expected_columns": [
+        "invoice_count"
+      ],
+      "actual_columns": [
+        "invoice_count"
+      ],
+      "expected_rows": [
+        [
+          0
+        ]
+      ],
+      "actual_rows": [
+        [
+          0
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q009",
+      "question": "Which five customers have the highest total invoice spending?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName, ROUND(SUM(Invoice.Total), 2) AS total_spending FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY Customer.CustomerId, Customer.FirstName, Customer.LastName ORDER BY total_spending DESC, Customer.CustomerId LIMIT 5",
+      "expected_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "total_spending"
+      ],
+      "actual_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "total_spending"
+      ],
+      "expected_rows": [
+        [
+          6,
+          "Helena",
+          "Holý",
+          49.62
+        ],
+        [
+          26,
+          "Richard",
+          "Cunningham",
+          47.62
+        ],
+        [
+          57,
+          "Luis",
+          "Rojas",
+          46.62
+        ],
+        [
+          45,
+          "Ladislav",
+          "Kovács",
+          45.62
+        ],
+        [
+          46,
+          "Hugh",
+          "O'Reilly",
+          45.62
+        ]
+      ],
+      "actual_rows": [
+        [
+          6,
+          "Helena",
+          "Holý",
+          49.62
+        ],
+        [
+          26,
+          "Richard",
+          "Cunningham",
+          47.62
+        ],
+        [
+          57,
+          "Luis",
+          "Rojas",
+          46.62
+        ],
+        [
+          45,
+          "Ladislav",
+          "Kovács",
+          45.62
+        ],
+        [
+          46,
+          "Hugh",
+          "O'Reilly",
+          45.62
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q010",
+      "question": "What was the total invoice revenue for each month of 2013?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT STRFTIME('%Y-%m', Invoice.InvoiceDate) AS month, ROUND(SUM(Invoice.Total), 2) AS revenue FROM Invoice WHERE Invoice.InvoiceDate >= '2013-01-01' AND Invoice.InvoiceDate < '2014-01-01' GROUP BY STRFTIME('%Y-%m', Invoice.InvoiceDate) ORDER BY month LIMIT 100",
+      "expected_columns": [
+        "month",
+        "revenue"
+      ],
+      "actual_columns": [
+        "month",
+        "revenue"
+      ],
+      "expected_rows": [],
+      "actual_rows": [],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q011",
+      "question": "Which five billing countries generated the most invoice revenue?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Invoice.BillingCountry AS country, ROUND(SUM(Invoice.Total), 2) AS revenue FROM Invoice GROUP BY Invoice.BillingCountry ORDER BY revenue DESC, country LIMIT 5",
+      "expected_columns": [
+        "country",
+        "revenue"
+      ],
+      "actual_columns": [
+        "country",
+        "revenue"
+      ],
+      "expected_rows": [
+        [
+          "USA",
+          523.06
+        ],
+        [
+          "Canada",
+          303.96
+        ],
+        [
+          "France",
+          195.1
+        ],
+        [
+          "Brazil",
+          190.1
+        ],
+        [
+          "Germany",
+          156.48
+        ]
+      ],
+      "actual_rows": [
+        [
+          "USA",
+          523.06
+        ],
+        [
+          "Canada",
+          303.96
+        ],
+        [
+          "France",
+          195.1
+        ],
+        [
+          "Brazil",
+          190.1
+        ],
+        [
+          "Germany",
+          156.48
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q012",
+      "question": "Which five music genres have the most tracks?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Genre.Name AS genre, COUNT(Track.TrackId) AS track_count FROM Genre JOIN Track ON Genre.GenreId = Track.GenreId GROUP BY Genre.GenreId, Genre.Name ORDER BY track_count DESC, genre LIMIT 5",
+      "expected_columns": [
+        "genre",
+        "track_count"
+      ],
+      "actual_columns": [
+        "genre",
+        "track_count"
+      ],
+      "expected_rows": [
+        [
+          "Rock",
+          1297
+        ],
+        [
+          "Latin",
+          579
+        ],
+        [
+          "Metal",
+          374
+        ],
+        [
+          "Alternative & Punk",
+          332
+        ],
+        [
+          "Jazz",
+          130
+        ]
+      ],
+      "actual_rows": [
+        [
+          "Rock",
+          1297
+        ],
+        [
+          "Latin",
+          579
+        ],
+        [
+          "Metal",
+          374
+        ],
+        [
+          "Alternative & Punk",
+          332
+        ],
+        [
+          "Jazz",
+          130
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q013",
+      "question": "Which five artists have the most albums?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Artist.Name AS artist, COUNT(Album.AlbumId) AS album_count FROM Artist JOIN Album ON Artist.ArtistId = Album.ArtistId GROUP BY Artist.ArtistId, Artist.Name ORDER BY album_count DESC, Artist.Name LIMIT 5",
+      "expected_columns": [
+        "artist",
+        "album_count"
+      ],
+      "actual_columns": [
+        "artist",
+        "album_count"
+      ],
+      "expected_rows": [
+        [
+          "Iron Maiden",
+          21
+        ],
+        [
+          "Led Zeppelin",
+          14
+        ],
+        [
+          "Deep Purple",
+          11
+        ],
+        [
+          "Metallica",
+          10
+        ],
+        [
+          "U2",
+          10
+        ]
+      ],
+      "actual_rows": [
+        [
+          "Iron Maiden",
+          21
+        ],
+        [
+          "Led Zeppelin",
+          14
+        ],
+        [
+          "Deep Purple",
+          11
+        ],
+        [
+          "Metallica",
+          10
+        ],
+        [
+          "U2",
+          10
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q014",
+      "question": "What is the average track length in minutes for each of the five longest-average genres?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Genre.Name AS genre, ROUND(AVG(Track.Milliseconds) / 60000.0, 2) AS average_minutes FROM Genre JOIN Track ON Genre.GenreId = Track.GenreId GROUP BY Genre.GenreId, Genre.Name ORDER BY average_minutes DESC, genre LIMIT 5",
+      "expected_columns": [
+        "genre",
+        "average_minutes"
+      ],
+      "actual_columns": [
+        "genre",
+        "average_minutes"
+      ],
+      "expected_rows": [
+        [
+          "Sci Fi & Fantasy",
+          48.53
+        ],
+        [
+          "Science Fiction",
+          43.76
+        ],
+        [
+          "Drama",
+          42.92
+        ],
+        [
+          "TV Shows",
+          35.75
+        ],
+        [
+          "Comedy",
+          26.42
+        ]
+      ],
+      "actual_rows": [
+        [
+          "Sci Fi & Fantasy",
+          48.53
+        ],
+        [
+          "Science Fiction",
+          43.76
+        ],
+        [
+          "Drama",
+          42.92
+        ],
+        [
+          "TV Shows",
+          35.75
+        ],
+        [
+          "Comedy",
+          26.42
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q015",
+      "question": "Which five artists generated the most revenue from sold tracks?",
+      "answerable": true,
+      "status": "FAIL",
+      "failure_category": "incorrect_columns",
+      "generated_sql": "SELECT Artist.Name AS artist, ROUND(SUM(InvoiceLine.UnitPrice * InvoiceLine.Quantity), 2) AS total_revenue FROM Artist JOIN Album ON Artist.ArtistId = Album.ArtistId JOIN Track ON Album.AlbumId = Track.AlbumId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId GROUP BY Artist.ArtistId, Artist.Name ORDER BY total_revenue DESC, Artist.Name LIMIT 5",
+      "expected_columns": [
+        "artist",
+        "revenue"
+      ],
+      "actual_columns": [
+        "artist",
+        "total_revenue"
+      ],
+      "expected_rows": [
+        [
+          "Iron Maiden",
+          138.6
+        ],
+        [
+          "U2",
+          105.93
+        ],
+        [
+          "Metallica",
+          90.09
+        ],
+        [
+          "Led Zeppelin",
+          86.13
+        ],
+        [
+          "Lost",
+          81.59
+        ]
+      ],
+      "actual_rows": [
+        [
+          "Iron Maiden",
+          138.6
+        ],
+        [
+          "U2",
+          105.93
+        ],
+        [
+          "Metallica",
+          90.09
+        ],
+        [
+          "Led Zeppelin",
+          86.13
+        ],
+        [
+          "Lost",
+          81.59
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q016",
+      "question": "Show five tracks that have never appeared on an invoice.",
+      "answerable": true,
+      "status": "FAIL",
+      "failure_category": "incorrect_result",
+      "generated_sql": "SELECT TrackId, Name FROM Track WHERE NOT EXISTS(SELECT 1 FROM InvoiceLine WHERE InvoiceLine.TrackId = Track.TrackId) ORDER BY TrackId LIMIT 5",
+      "expected_columns": [
+        "TrackId",
+        "Name"
+      ],
+      "actual_columns": [
+        "TrackId",
+        "Name"
+      ],
+      "expected_rows": [
+        [
+          3027,
+          "\"40\""
+        ],
+        [
+          3412,
+          "\"Eine Kleine Nachtmusik\" Serenade In G, K. 525: I. Allegro"
+        ],
+        [
+          109,
+          "#1 Zero"
+        ],
+        [
+          570,
+          "(Da Le) Yaleo"
+        ],
+        [
+          3045,
+          "(I Can't Help) Falling In Love With You"
+        ]
+      ],
+      "actual_rows": [
+        [
+          7,
+          "Let's Get It Up"
+        ],
+        [
+          11,
+          "C.O.D."
+        ],
+        [
+          17,
+          "Let There Be Rock"
+        ],
+        [
+          18,
+          "Bad Boy Boogie"
+        ],
+        [
+          22,
+          "Whole Lotta Rosie"
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q017",
+      "question": "Which customers have never received an invoice?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName FROM Customer WHERE NOT EXISTS(SELECT 1 FROM Invoice WHERE Invoice.CustomerId = Customer.CustomerId) LIMIT 100",
+      "expected_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName"
+      ],
+      "actual_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName"
+      ],
+      "expected_rows": [],
+      "actual_rows": [],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q018",
+      "question": "Which five tracks have sold the most units?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Track.Name AS track, SUM(InvoiceLine.Quantity) AS units_sold FROM Track JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId GROUP BY Track.TrackId, Track.Name ORDER BY units_sold DESC, Track.Name LIMIT 5",
+      "expected_columns": [
+        "track",
+        "units_sold"
+      ],
+      "actual_columns": [
+        "track",
+        "units_sold"
+      ],
+      "expected_rows": [
+        [
+          "A Cor Do Sol",
+          2
+        ],
+        [
+          "A Melhor Forma",
+          2
+        ],
+        [
+          "A Novidade (Live)",
+          2
+        ],
+        [
+          "Abraham, Martin And John",
+          2
+        ],
+        [
+          "Aces High",
+          2
+        ]
+      ],
+      "actual_rows": [
+        [
+          "A Cor Do Sol",
+          2
+        ],
+        [
+          "A Melhor Forma",
+          2
+        ],
+        [
+          "A Novidade (Live)",
+          2
+        ],
+        [
+          "Abraham, Martin And John",
+          2
+        ],
+        [
+          "Aces High",
+          2
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q019",
+      "question": "How much line-item revenue has each genre generated?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Genre.Name AS genre, ROUND(SUM(InvoiceLine.UnitPrice * InvoiceLine.Quantity), 2) AS revenue FROM Genre JOIN Track ON Genre.GenreId = Track.GenreId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId GROUP BY Genre.GenreId, Genre.Name ORDER BY revenue DESC, genre LIMIT 100",
+      "expected_columns": [
+        "genre",
+        "revenue"
+      ],
+      "actual_columns": [
+        "genre",
+        "revenue"
+      ],
+      "expected_rows": [
+        [
+          "Rock",
+          826.65
+        ],
+        [
+          "Latin",
+          382.14
+        ],
+        [
+          "Metal",
+          261.36
+        ],
+        [
+          "Alternative & Punk",
+          241.56
+        ],
+        [
+          "TV Shows",
+          93.53
+        ],
+        [
+          "Jazz",
+          79.2
+        ],
+        [
+          "Blues",
+          60.39
+        ],
+        [
+          "Drama",
+          57.71
+        ],
+        [
+          "Classical",
+          40.59
+        ],
+        [
+          "R&B/Soul",
+          40.59
+        ],
+        [
+          "Sci Fi & Fantasy",
+          39.8
+        ],
+        [
+          "Reggae",
+          29.7
+        ],
+        [
+          "Pop",
+          27.72
+        ],
+        [
+          "Soundtrack",
+          19.8
+        ],
+        [
+          "Comedy",
+          17.91
+        ],
+        [
+          "Hip Hop/Rap",
+          16.83
+        ],
+        [
+          "Bossa Nova",
+          14.85
+        ],
+        [
+          "Alternative",
+          13.86
+        ],
+        [
+          "World",
+          12.87
+        ],
+        [
+          "Science Fiction",
+          11.94
+        ],
+        [
+          "Electronica/Dance",
+          11.88
+        ],
+        [
+          "Heavy Metal",
+          11.88
+        ],
+        [
+          "Easy Listening",
+          9.9
+        ],
+        [
+          "Rock And Roll",
+          5.94
+        ]
+      ],
+      "actual_rows": [
+        [
+          "Rock",
+          826.65
+        ],
+        [
+          "Latin",
+          382.14
+        ],
+        [
+          "Metal",
+          261.36
+        ],
+        [
+          "Alternative & Punk",
+          241.56
+        ],
+        [
+          "TV Shows",
+          93.53
+        ],
+        [
+          "Jazz",
+          79.2
+        ],
+        [
+          "Blues",
+          60.39
+        ],
+        [
+          "Drama",
+          57.71
+        ],
+        [
+          "Classical",
+          40.59
+        ],
+        [
+          "R&B/Soul",
+          40.59
+        ],
+        [
+          "Sci Fi & Fantasy",
+          39.8
+        ],
+        [
+          "Reggae",
+          29.7
+        ],
+        [
+          "Pop",
+          27.72
+        ],
+        [
+          "Soundtrack",
+          19.8
+        ],
+        [
+          "Comedy",
+          17.91
+        ],
+        [
+          "Hip Hop/Rap",
+          16.83
+        ],
+        [
+          "Bossa Nova",
+          14.85
+        ],
+        [
+          "Alternative",
+          13.86
+        ],
+        [
+          "World",
+          12.87
+        ],
+        [
+          "Science Fiction",
+          11.94
+        ],
+        [
+          "Electronica/Dance",
+          11.88
+        ],
+        [
+          "Heavy Metal",
+          11.88
+        ],
+        [
+          "Easy Listening",
+          9.9
+        ],
+        [
+          "Rock And Roll",
+          5.94
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q020",
+      "question": "How many customers does each employee support?",
+      "answerable": true,
+      "status": "FAIL",
+      "failure_category": "incorrect_result",
+      "generated_sql": "SELECT Employee.EmployeeId, Employee.FirstName, Employee.LastName, COUNT(Customer.CustomerId) AS customer_count FROM Employee LEFT JOIN Customer ON Employee.EmployeeId = Customer.SupportRepId GROUP BY Employee.EmployeeId, Employee.FirstName, Employee.LastName ORDER BY customer_count DESC, Employee.EmployeeId LIMIT 100",
+      "expected_columns": [
+        "EmployeeId",
+        "FirstName",
+        "LastName",
+        "customer_count"
+      ],
+      "actual_columns": [
+        "EmployeeId",
+        "FirstName",
+        "LastName",
+        "customer_count"
+      ],
+      "expected_rows": [
+        [
+          3,
+          "Jane",
+          "Peacock",
+          21
+        ],
+        [
+          4,
+          "Margaret",
+          "Park",
+          20
+        ],
+        [
+          5,
+          "Steve",
+          "Johnson",
+          18
+        ],
+        [
+          1,
+          "Andrew",
+          "Adams",
+          0
+        ],
+        [
+          8,
+          "Laura",
+          "Callahan",
+          0
+        ],
+        [
+          2,
+          "Nancy",
+          "Edwards",
+          0
+        ],
+        [
+          7,
+          "Robert",
+          "King",
+          0
+        ],
+        [
+          6,
+          "Michael",
+          "Mitchell",
+          0
+        ]
+      ],
+      "actual_rows": [
+        [
+          3,
+          "Jane",
+          "Peacock",
+          21
+        ],
+        [
+          4,
+          "Margaret",
+          "Park",
+          20
+        ],
+        [
+          5,
+          "Steve",
+          "Johnson",
+          18
+        ],
+        [
+          1,
+          "Andrew",
+          "Adams",
+          0
+        ],
+        [
+          2,
+          "Nancy",
+          "Edwards",
+          0
+        ],
+        [
+          6,
+          "Michael",
+          "Mitchell",
+          0
+        ],
+        [
+          7,
+          "Robert",
+          "King",
+          0
+        ],
+        [
+          8,
+          "Laura",
+          "Callahan",
+          0
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q021",
+      "question": "How many invoices were issued in each year?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT STRFTIME('%Y', Invoice.InvoiceDate) AS year, COUNT(Invoice.InvoiceId) AS invoice_count FROM Invoice GROUP BY STRFTIME('%Y', Invoice.InvoiceDate) ORDER BY year LIMIT 100",
+      "expected_columns": [
+        "year",
+        "invoice_count"
+      ],
+      "actual_columns": [
+        "year",
+        "invoice_count"
+      ],
+      "expected_rows": [
+        [
+          "2021",
+          83
+        ],
+        [
+          "2022",
+          83
+        ],
+        [
+          "2023",
+          83
+        ],
+        [
+          "2024",
+          83
+        ],
+        [
+          "2025",
+          80
+        ]
+      ],
+      "actual_rows": [
+        [
+          "2021",
+          83
+        ],
+        [
+          "2022",
+          83
+        ],
+        [
+          "2023",
+          83
+        ],
+        [
+          "2024",
+          83
+        ],
+        [
+          "2025",
+          80
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q022",
+      "question": "What is the average invoice total?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT ROUND(AVG(Total), 2) AS average_invoice_total FROM Invoice LIMIT 100",
+      "expected_columns": [
+        "average_invoice_total"
+      ],
+      "actual_columns": [
+        "average_invoice_total"
+      ],
+      "expected_rows": [
+        [
+          5.65
+        ]
+      ],
+      "actual_rows": [
+        [
+          5.65
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q023",
+      "question": "Show the five most expensive tracks.",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Name, UnitPrice FROM Track ORDER BY UnitPrice DESC, Name LIMIT 5",
+      "expected_columns": [
+        "Name",
+        "UnitPrice"
+      ],
+      "actual_columns": [
+        "Name",
+        "UnitPrice"
+      ],
+      "expected_rows": [
+        [
+          "\"?\"",
+          1.99
+        ],
+        [
+          "...And Found",
+          1.99
+        ],
+        [
+          "...In Translation",
+          1.99
+        ],
+        [
+          ".07%",
+          1.99
+        ],
+        [
+          "A Benihana Christmas, Pts. 1 & 2",
+          1.99
+        ]
+      ],
+      "actual_rows": [
+        [
+          "\"?\"",
+          1.99
+        ],
+        [
+          "...And Found",
+          1.99
+        ],
+        [
+          "...In Translation",
+          1.99
+        ],
+        [
+          ".07%",
+          1.99
+        ],
+        [
+          "A Benihana Christmas, Pts. 1 & 2",
+          1.99
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q024",
+      "question": "Which five playlists contain the most tracks?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Playlist.Name AS playlist, COUNT(PlaylistTrack.TrackId) AS track_count FROM Playlist JOIN PlaylistTrack ON Playlist.PlaylistId = PlaylistTrack.PlaylistId GROUP BY Playlist.PlaylistId, Playlist.Name ORDER BY track_count DESC, Playlist.Name LIMIT 5",
+      "expected_columns": [
+        "playlist",
+        "track_count"
+      ],
+      "actual_columns": [
+        "playlist",
+        "track_count"
+      ],
+      "expected_rows": [
+        [
+          "Music",
+          3290
+        ],
+        [
+          "Music",
+          3290
+        ],
+        [
+          "90’s Music",
+          1477
+        ],
+        [
+          "TV Shows",
+          213
+        ],
+        [
+          "TV Shows",
+          213
+        ]
+      ],
+      "actual_rows": [
+        [
+          "Music",
+          3290
+        ],
+        [
+          "Music",
+          3290
+        ],
+        [
+          "90’s Music",
+          1477
+        ],
+        [
+          "TV Shows",
+          213
+        ],
+        [
+          "TV Shows",
+          213
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q025",
+      "question": "Which albums contain more than 20 tracks?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Album.Title AS album, COUNT(Track.TrackId) AS track_count FROM Album JOIN Track ON Album.AlbumId = Track.AlbumId GROUP BY Album.AlbumId, Album.Title HAVING COUNT(Track.TrackId) > 20 ORDER BY track_count DESC, album LIMIT 100",
+      "expected_columns": [
+        "album",
+        "track_count"
+      ],
+      "actual_columns": [
+        "album",
+        "track_count"
+      ],
+      "expected_rows": [
+        [
+          "Greatest Hits",
+          57
+        ],
+        [
+          "Minha Historia",
+          34
+        ],
+        [
+          "Unplugged",
+          30
+        ],
+        [
+          "Lost, Season 3",
+          26
+        ],
+        [
+          "Lost, Season 1",
+          25
+        ],
+        [
+          "The Office, Season 3",
+          25
+        ],
+        [
+          "Battlestar Galactica (Classic), Season 1",
+          24
+        ],
+        [
+          "Lost, Season 2",
+          24
+        ],
+        [
+          "My Way: The Best Of Frank Sinatra [Disc 1]",
+          24
+        ],
+        [
+          "Afrociberdelia",
+          23
+        ],
+        [
+          "Heroes, Season 1",
+          23
+        ],
+        [
+          "Instant Karma: The Amnesty International Campaign to Save Darfur",
+          23
+        ],
+        [
+          "Acústico",
+          22
+        ],
+        [
+          "The Office, Season 2",
+          22
+        ],
+        [
+          "Up An' Atom",
+          22
+        ],
+        [
+          "Acústico MTV",
+          21
+        ],
+        [
+          "International Superhits",
+          21
+        ]
+      ],
+      "actual_rows": [
+        [
+          "Greatest Hits",
+          57
+        ],
+        [
+          "Minha Historia",
+          34
+        ],
+        [
+          "Unplugged",
+          30
+        ],
+        [
+          "Lost, Season 3",
+          26
+        ],
+        [
+          "Lost, Season 1",
+          25
+        ],
+        [
+          "The Office, Season 3",
+          25
+        ],
+        [
+          "Battlestar Galactica (Classic), Season 1",
+          24
+        ],
+        [
+          "Lost, Season 2",
+          24
+        ],
+        [
+          "My Way: The Best Of Frank Sinatra [Disc 1]",
+          24
+        ],
+        [
+          "Afrociberdelia",
+          23
+        ],
+        [
+          "Heroes, Season 1",
+          23
+        ],
+        [
+          "Instant Karma: The Amnesty International Campaign to Save Darfur",
+          23
+        ],
+        [
+          "Acústico",
+          22
+        ],
+        [
+          "The Office, Season 2",
+          22
+        ],
+        [
+          "Up An' Atom",
+          22
+        ],
+        [
+          "Acústico MTV",
+          21
+        ],
+        [
+          "International Superhits",
+          21
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q026",
+      "question": "Which customers have spent more than 40 dollars in total invoice amounts?",
+      "answerable": true,
+      "status": "FAIL",
+      "failure_category": "incorrect_result",
+      "generated_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName, ROUND(SUM(Invoice.Total), 2) AS total_spending FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY Customer.CustomerId, Customer.FirstName, Customer.LastName HAVING SUM(Invoice.Total) > 40 LIMIT 100",
+      "expected_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "total_spending"
+      ],
+      "actual_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "total_spending"
+      ],
+      "expected_rows": [
+        [
+          6,
+          "Helena",
+          "Holý",
+          49.62
+        ],
+        [
+          26,
+          "Richard",
+          "Cunningham",
+          47.62
+        ],
+        [
+          57,
+          "Luis",
+          "Rojas",
+          46.62
+        ],
+        [
+          45,
+          "Ladislav",
+          "Kovács",
+          45.62
+        ],
+        [
+          46,
+          "Hugh",
+          "O'Reilly",
+          45.62
+        ],
+        [
+          28,
+          "Julia",
+          "Barnett",
+          43.62
+        ],
+        [
+          24,
+          "Frank",
+          "Ralston",
+          43.62
+        ],
+        [
+          37,
+          "Fynn",
+          "Zimmermann",
+          43.62
+        ],
+        [
+          7,
+          "Astrid",
+          "Gruber",
+          42.62
+        ],
+        [
+          25,
+          "Victor",
+          "Stevens",
+          42.62
+        ],
+        [
+          44,
+          "Terhi",
+          "Hämäläinen",
+          41.62
+        ],
+        [
+          43,
+          "Isabelle",
+          "Mercier",
+          40.62
+        ],
+        [
+          48,
+          "Johannes",
+          "Van der Berg",
+          40.62
+        ],
+        [
+          5,
+          "František",
+          "Wichterlová",
+          40.62
+        ]
+      ],
+      "actual_rows": [
+        [
+          5,
+          "František",
+          "Wichterlová",
+          40.62
+        ],
+        [
+          6,
+          "Helena",
+          "Holý",
+          49.62
+        ],
+        [
+          7,
+          "Astrid",
+          "Gruber",
+          42.62
+        ],
+        [
+          24,
+          "Frank",
+          "Ralston",
+          43.62
+        ],
+        [
+          25,
+          "Victor",
+          "Stevens",
+          42.62
+        ],
+        [
+          26,
+          "Richard",
+          "Cunningham",
+          47.62
+        ],
+        [
+          28,
+          "Julia",
+          "Barnett",
+          43.62
+        ],
+        [
+          37,
+          "Fynn",
+          "Zimmermann",
+          43.62
+        ],
+        [
+          43,
+          "Isabelle",
+          "Mercier",
+          40.62
+        ],
+        [
+          44,
+          "Terhi",
+          "Hämäläinen",
+          41.62
+        ],
+        [
+          45,
+          "Ladislav",
+          "Kovács",
+          45.62
+        ],
+        [
+          46,
+          "Hugh",
+          "O'Reilly",
+          45.62
+        ],
+        [
+          48,
+          "Johannes",
+          "Van der Berg",
+          40.62
+        ],
+        [
+          57,
+          "Luis",
+          "Rojas",
+          46.62
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q027",
+      "question": "Show five tracks whose composer is not recorded.",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT TrackId, Name FROM Track WHERE Composer IS NULL ORDER BY Name LIMIT 5",
+      "expected_columns": [
+        "TrackId",
+        "Name"
+      ],
+      "actual_columns": [
+        "TrackId",
+        "Name"
+      ],
+      "expected_rows": [
+        [
+          2918,
+          "\"?\""
+        ],
+        [
+          3254,
+          "#9 Dream"
+        ],
+        [
+          3045,
+          "(I Can't Help) Falling In Love With You"
+        ],
+        [
+          2869,
+          "...And Found"
+        ],
+        [
+          2906,
+          "...In Translation"
+        ]
+      ],
+      "actual_rows": [
+        [
+          2918,
+          "\"?\""
+        ],
+        [
+          3254,
+          "#9 Dream"
+        ],
+        [
+          3045,
+          "(I Can't Help) Falling In Love With You"
+        ],
+        [
+          2869,
+          "...And Found"
+        ],
+        [
+          2906,
+          "...In Translation"
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q028",
+      "question": "How many invoices have a total greater than 10 dollars?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT COUNT(InvoiceId) AS invoice_count FROM Invoice WHERE Total > 10 LIMIT 100",
+      "expected_columns": [
+        "invoice_count"
+      ],
+      "actual_columns": [
+        "invoice_count"
+      ],
+      "expected_rows": [
+        [
+          64
+        ]
+      ],
+      "actual_rows": [
+        [
+          64
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q029",
+      "question": "Show the five customers with the most invoices, including their invoice counts.",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName, COUNT(Invoice.InvoiceId) AS invoice_count FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY Customer.CustomerId, Customer.FirstName, Customer.LastName ORDER BY invoice_count DESC, Customer.CustomerId LIMIT 5",
+      "expected_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "invoice_count"
+      ],
+      "actual_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "invoice_count"
+      ],
+      "expected_rows": [
+        [
+          1,
+          "Luís",
+          "Gonçalves",
+          7
+        ],
+        [
+          2,
+          "Leonie",
+          "Köhler",
+          7
+        ],
+        [
+          3,
+          "François",
+          "Tremblay",
+          7
+        ],
+        [
+          4,
+          "Bjørn",
+          "Hansen",
+          7
+        ],
+        [
+          5,
+          "František",
+          "Wichterlová",
+          7
+        ]
+      ],
+      "actual_rows": [
+        [
+          1,
+          "Luís",
+          "Gonçalves",
+          7
+        ],
+        [
+          2,
+          "Leonie",
+          "Köhler",
+          7
+        ],
+        [
+          3,
+          "François",
+          "Tremblay",
+          7
+        ],
+        [
+          4,
+          "Bjørn",
+          "Hansen",
+          7
+        ],
+        [
+          5,
+          "František",
+          "Wichterlová",
+          7
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q030",
+      "question": "How much revenue has each media type generated from sold tracks?",
+      "answerable": true,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT MediaType.Name AS media_type, ROUND(SUM(InvoiceLine.UnitPrice * InvoiceLine.Quantity), 2) AS revenue FROM MediaType JOIN Track ON MediaType.MediaTypeId = Track.MediaTypeId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId GROUP BY MediaType.MediaTypeId, MediaType.Name ORDER BY revenue DESC, media_type LIMIT 100",
+      "expected_columns": [
+        "media_type",
+        "revenue"
+      ],
+      "actual_columns": [
+        "media_type",
+        "revenue"
+      ],
+      "expected_rows": [
+        [
+          "MPEG audio file",
+          1956.24
+        ],
+        [
+          "Protected MPEG-4 video file",
+          220.89
+        ],
+        [
+          "Protected AAC audio file",
+          144.54
+        ],
+        [
+          "Purchased AAC audio file",
+          3.96
+        ],
+        [
+          "AAC audio file",
+          2.97
+        ]
+      ],
+      "actual_rows": [
+        [
+          "MPEG audio file",
+          1956.24
+        ],
+        [
+          "Protected MPEG-4 video file",
+          220.89
+        ],
+        [
+          "Protected AAC audio file",
+          144.54
+        ],
+        [
+          "Purchased AAC audio file",
+          3.96
+        ],
+        [
+          "AAC audio file",
+          2.97
+        ]
+      ],
+      "error": null,
+      "refusal": null
+    },
+    {
+      "id": "Q031",
+      "question": "How many physical copies of each track are currently in warehouse inventory?",
+      "answerable": false,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": null,
+      "refusal": "The database has no warehouse inventory or stock quantity data."
+    },
+    {
+      "id": "Q032",
+      "question": "What is each customer's age today?",
+      "answerable": false,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": null,
+      "refusal": "The database has no customer date-of-birth data."
+    },
+    {
+      "id": "Q033",
+      "question": "What is the customer satisfaction score for each support representative?",
+      "answerable": false,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": null,
+      "refusal": "The database has no customer satisfaction or survey score data."
+    },
+    {
+      "id": "Q034",
+      "question": "Which support tickets are unresolved and how long have they been open?",
+      "answerable": false,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": null,
+      "refusal": "The database has no support ticket records or ticket status data."
+    },
+    {
+      "id": "Q035",
+      "question": "Which marketing campaign generated the highest return on investment?",
+      "answerable": false,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": null,
+      "refusal": "The database has no marketing campaign cost or attribution data."
+    }
+  ]
+}

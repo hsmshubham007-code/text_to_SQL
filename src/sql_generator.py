@@ -1,18 +1,26 @@
-"""Generate and execute safe SQL from natural-language questions."""
+"""Generate, validate, repair, and execute read-only SQL."""
 
+import json
 import os
+import sqlite3
 from pathlib import Path
 
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 
-from src.database_tools import get_table_schema, list_tables, run_sql
+def execute_sql_tool(sql: str) -> str:
+    """Execute SQL through the registered read-only database tool."""
+    return execute_readonly_sql.invoke({"sql": sql})
+
+from src.agent_tools import execute_readonly_sql, get_database_overview
 from src.sql_safety import validate_sql
 
 
 load_dotenv()
 
-DEFAULT_MODEL = "openai/gpt-oss-20b"
+DEFAULT_MODEL = "qwen/qwen3.8-27b"
+MAX_SQL_ATTEMPTS = 2
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PROMPT_PATH = PROJECT_ROOT / "prompts" / "sql_generation.txt"
 
@@ -42,6 +50,10 @@ UNSUPPORTED_TOPICS = {
         ("marketing campaign", "campaign roi", "return on investment"),
         "The database has no marketing campaign cost or attribution data.",
     ),
+    "weather": (
+        ("weather", "forecast", "temperature on mars", "weather on mars"),
+        "The Chinook database contains music-store data, not weather or planetary weather information.",
+    ),
 }
 
 
@@ -56,12 +68,30 @@ def unsupported_reason(question: str) -> str | None:
     return None
 
 
-def build_compact_schema() -> str:
-    """Build a schema summary containing columns and relationships."""
+def build_compact_schema(tool_calls: list | None = None) -> str:
+    """Get schema information through the registered overview tool."""
+    entry = {
+        "tool": "get_database_overview",
+        "input": {},
+    }
+
+    try:
+        raw_schema = get_database_overview.invoke({})
+        overview = json.loads(raw_schema)
+        entry["success"] = True
+    except Exception as error:
+        entry.update({"success": False, "error": str(error)})
+        if tool_calls is not None:
+            tool_calls.append(entry)
+        raise
+
+    if tool_calls is not None:
+        tool_calls.append(entry)
+
     sections = []
 
-    for table in list_tables():
-        schema = get_table_schema(table)
+    for table in overview["tables"]:
+        schema = overview["schemas"][table]
         columns = []
 
         for column in schema["columns"]:
@@ -89,8 +119,11 @@ def build_compact_schema() -> str:
     return "\n".join(sections)
 
 
-def load_sql_prompt(question: str) -> str:
-    """Load the external prompt and insert the schema and question."""
+def load_sql_prompt(
+    question: str,
+    tool_calls: list | None = None,
+) -> str:
+    """Load the prompt and insert schema information from the schema tool."""
     if not PROMPT_PATH.is_file():
         raise FileNotFoundError(
             f"SQL generation prompt not found: {PROMPT_PATH}"
@@ -99,13 +132,18 @@ def load_sql_prompt(question: str) -> str:
     template = PROMPT_PATH.read_text(encoding="utf-8")
 
     return template.format(
-        schema=build_compact_schema(),
+        schema=build_compact_schema(tool_calls),
         question=question.strip(),
     )
 
 
-def generate_sql(question: str) -> str:
-    """Generate one validated SELECT query using the external prompt."""
+def generate_sql(
+    question: str,
+    correction_error: str | None = None,
+    previous_sql: str | None = None,
+    tool_calls: list | None = None,
+) -> str:
+    """Generate SQL and validate it before returning it."""
     if not question or not question.strip():
         raise ValueError("Question cannot be empty.")
 
@@ -123,7 +161,17 @@ def generate_sql(question: str) -> str:
         api_key=api_key,
     )
 
-    prompt = load_sql_prompt(question)
+    prompt = load_sql_prompt(question, tool_calls)
+
+    if correction_error:
+        prompt += (
+            "\n\nCORRECTION REQUIRED:\n"
+            f"Previous SQL: {previous_sql or '(generation/validation failed)'}\n"
+            f"Error: {correction_error}\n"
+            "Correct the problem using only the provided schema. "
+            "Return SQL only. Use one read-only SELECT query."
+        )
+
     response = llm.invoke(prompt)
     sql = response.content
 
@@ -143,28 +191,84 @@ def generate_sql(question: str) -> str:
 
 
 def ask_database(question: str) -> dict:
-    """Return a refusal or execute validated, read-only SQL."""
-    try:
-        sql = validate_sql(generate_sql(question))
-    except UnsupportedQuestionError as error:
+    """Generate, validate, and execute SQL with one bounded repair attempt."""
+    if not question or not question.strip():
+        raise ValueError("Question cannot be empty.")
+
+    question = question.strip()
+    reason = unsupported_reason(question)
+
+    if reason:
         return {
             "question": question,
             "supported": False,
-            "refusal": str(error),
+            "refusal": reason,
             "sql": None,
             "columns": [],
             "rows": [],
             "row_count": 0,
+            "attempts": 0,
+            "tool_calls": [],
         }
 
-    result = run_sql(sql)
+    tool_calls = []
+    last_error = None
+    previous_sql = None
 
-    return {
-        "question": question,
-        "supported": True,
-        "refusal": None,
-        "sql": result["sql"],
-        "columns": result["columns"],
-        "rows": result["rows"],
-        "row_count": result["row_count"],
-    }
+    for attempt in range(MAX_SQL_ATTEMPTS):
+        try:
+            sql = generate_sql(
+                question,
+                correction_error=str(last_error) if last_error else None,
+                previous_sql=previous_sql,
+                tool_calls=tool_calls,
+            )
+
+            # Validate again immediately before invoking the execution tool.
+            sql = validate_sql(sql)
+            previous_sql = sql
+
+            entry = {
+                "tool": "execute_readonly_sql",
+                "input": {"sql": sql},
+            }
+
+            try:
+                raw_result = execute_sql_tool(sql)
+                result = json.loads(raw_result)
+                entry["success"] = True
+                tool_calls.append(entry)
+            except Exception as error:
+                entry.update({"success": False, "error": str(error)})
+                tool_calls.append(entry)
+                raise
+
+            return {
+                "question": question,
+                "supported": True,
+                "refusal": None,
+                "sql": result["sql"],
+                "columns": result["columns"],
+                "rows": result["rows"],
+                "row_count": result["row_count"],
+                "attempts": attempt + 1,
+                "tool_calls": tool_calls,
+            }
+
+        except UnsupportedQuestionError as error:
+            return {
+                "question": question,
+                "supported": False,
+                "refusal": str(error),
+                "sql": None,
+                "columns": [],
+                "rows": [],
+                "row_count": 0,
+                "attempts": attempt + 1,
+                "tool_calls": tool_calls,
+            }
+
+        except (ValueError, sqlite3.Error) as error:
+            last_error = error
+
+    raise last_error

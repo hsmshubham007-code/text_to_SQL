@@ -18,9 +18,12 @@ def validate_sql(sql: str) -> str:
     if not sql or not sql.strip():
         raise ValueError("SQL query cannot be empty.")
 
-    # Reject the malformed keyword/table combination seen in model output.
+        # Reject malformed SQL keywords that are joined to the next token.
     if re.search(r"\bFROM(?=[A-Za-z_])", sql, re.IGNORECASE):
         raise ValueError("Invalid SQL syntax: missing space after FROM.")
+
+    if re.search(r"\bAS(?=[A-Za-z_])", sql, re.IGNORECASE):
+        raise ValueError("Invalid SQL syntax: missing space after AS.")
 
     try:
         statements = sqlglot.parse(sql, read="sqlite")

@@ -68,3 +68,10 @@ def test_executes_read_only_query():
     assert result["rows"] == [[3503]]
     assert result["row_count"] == 1
     assert "LIMIT 100" in result["sql"].upper()
+
+def test_rejects_missing_space_after_as():
+    with pytest.raises(ValueError, match="missing space after AS"):
+        validate_sql(
+            "SELECT COUNT(Invoice.InvoiceId) ASinvoice_count "
+            "FROM Invoice"
+        )
