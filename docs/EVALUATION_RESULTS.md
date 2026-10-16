@@ -1,85 +1,171 @@
 # Text-to-SQL Evaluation Results
 
-## Evaluation setup
+## 1. Evaluation Setup
 
 The project uses the Chinook SQLite database and a 35-question evaluation dataset:
 
-- 30 answerable business questions
-- 5 unanswerable questions
+- **30 answerable business questions**
+- **5 unanswerable questions**
 
-Reference SQL and the golden set are audited locally before interpreting model results. These offline audits do not require Groq API calls.
+The dataset covers lookups, filters, joins, aggregations, rankings, and questions the database cannot answer. Reference SQL and the golden set are audited locally before model results are interpreted.
 
-## Recorded model measurements
+Offline audits and regression tests do not require Groq API calls. Full model evaluations do use the agent and may be affected by provider availability and rate limits.
 
-The following completed evaluation artifacts are preserved in `evals/`:
+## 2. Latest Recorded Evaluation
 
-| Measurement | `evaluation_results_before_agent.json` | Earlier `evaluation_results_latest.json` | Latest recorded evaluation |
-|---|---:|---:|---:|
-| Recorded time (UTC) | 2026-10-14 11:20 | 2026-10-14 12:04 | 2026-10-15 11:41 |
-| Answerable questions | 30 | 30 | 30 |
-| Passed answerable questions | 25 | 3 | 21 |
-| Incorrect results | 5 | 27 | 2 |
-| Runtime/API errors | 0 | 0 | 7 |
-| Answerable accuracy | 83.33% | 10.00% | 70.00% |
-| Correct unanswerable refusals | 5/5 | 5/5 | 5/5 |
-| Elapsed time | 449.67 s | 865.71 s | 391.27 s |
+The latest preserved full evaluation is recorded in `evals/evaluation_results_latest.json`, dated October 16, 2026.
 
-The earlier artifacts recorded these failure categories:
+| Measurement | Latest recorded result |
+|---|---:|
+| Total questions | 35 |
+| Answerable questions passed | 30/30 |
+| Answerable accuracy | 100% |
+| Correct unanswerable refusals | 5/5 |
+| Failed records | 0 |
+| Runtime/API errors | 0 |
+| Elapsed time | 598.50 seconds |
 
-- First run: `incorrect_result: 4`, `incorrect_columns: 1`
-- Second run: `incorrect_columns: 26`, `incorrect_result: 1`
-- Third run: `incorrect_columns: 2`, `error: 7`
+All 35 questions were marked `PASS` in this recorded run. This is the latest recorded measurement, not a guarantee of future performance. The evaluation has not been rerun as part of the offline taxonomy and test checks described below.
 
-A separate attempted run recorded 8 passed answerable questions, 1 incorrect result, and 21 API errors caused by Groq token-per-day rate limits. That attempt was incomplete; its 26.67% pass rate is not a valid full-run accuracy measurement.
+## 3. Historical Evaluation Measurements
 
-An earlier report also recorded an 11/30 result (36.67%). Its corresponding raw artifact has not been identified in the JSON files inspected, so it should not be confused with the preserved measurements above.
+Earlier completed runs produced different results. They are preserved here for transparency and must not be treated as equivalent to the latest run.
 
-A fresh full evaluation was completed on October 16, 2026, after the latest prompt and SQL-safety changes. All 30 answerable questions passed (100% accuracy), and all 5 unanswerable questions were correctly refused. The saved `evals/evaluation_results_latest.json` artifact contains 35 result records, all marked `PASS`, with zero failed records and zero runtime/API errors. The run took 598.50 seconds.
+| Artifact | Recorded time (UTC) | Answerable passed | Answerable accuracy | Correct refusals | Failed answerable cases |
+|---|---|---:|---:|---:|---:|
+| `evaluation_results.json` | 2026-10-14 08:05 | 11/30 | 36.67% | 5/5 | 19 |
+| `evaluation_results_before_agent.json` | 2026-10-14 11:20 | 25/30 | 83.33% | 5/5 | 5 |
+| `evaluation_results_latest.json` — latest recorded run | 2026-10-16 | 30/30 | 100% | 5/5 | 0 |
 
-This is the latest recorded evaluation. Future model or environment changes may produce different results.
+The historical timestamps above are taken from the saved report records. The October 16 result is the latest recorded evaluation; its detailed timestamp and measurements are available in the JSON artifact.
 
-## Current local verification
+An earlier documentation table attributed results of 3/30 and 21/30 to intermediate runs. Those entries are not included in the table above because their artifact identities and measurements need to be reconciled against the raw JSON files before they can be reliably compared with the identified reports.
 
-Latest automated test result:
+### Historical Groq rate-limit attempt
 
-- **82 tests passed** using `python -m pytest -q` in the current project environment.
+A separate incomplete evaluation recorded:
+
+- 8 passed answerable questions
+- 1 incorrect answer
+- 21 API errors caused by Groq token-per-day rate limits
+
+This was an incomplete run. Its apparent pass rate must not be reported as a completed benchmark accuracy measurement. API errors are not correct answers and should be reported separately.
+
+## 4. Automated Failure Taxonomy
+
+The offline script `evals/failure_taxonomy.py` classifies failures in two historical artifacts using reviewed root-cause labels. It writes the machine-readable output to `evals/failure_taxonomy.json`.
+
+### Historical run: `evaluation_results.json`
+
+| Reviewed root cause | Count |
+|---|---:|
+| Output-contract mismatch | 14 |
+| Ambiguous question or unspecified subset/tie-break | 4 |
+| Wrong aggregation | 1 |
+| **Total classified failures** | **19** |
+
+### Historical run: `evaluation_results_before_agent.json`
+
+| Reviewed root cause | Count |
+|---|---:|
+| Result-ordering mismatch | 3 |
+| Output-contract mismatch | 1 |
+| Ambiguous question or unspecified subset | 1 |
+| **Total classified failures** | **5** |
+
+These runs are reported separately because they represent different evaluation attempts. Their counts should not be added together as if they were one benchmark.
+
+### What the categories mean
+
+- **Output-contract mismatch:** returned column names, aliases, extra identifier columns, or column order differed from the reference output. Some historical cases had matching business values despite these differences.
+- **Result-ordering mismatch:** the rows contained the expected information but were returned in a different order from the reference result.
+- **Ambiguous question or unspecified subset:** a question requested a limited number of qualifying records without specifying a deterministic selection or tie-break rule.
+- **Wrong aggregation:** the generated result did not include a required aggregate. Historical case Q025 omitted the requested track count from its output.
+
+The classifications are reviewed explanations of the saved failures, not labels generated by the model. They are intended to distinguish SQL reasoning defects from benchmark comparison and question-definition issues.
+
+### Required assignment categories
+
+The assignment asks us to consider schema misunderstanding, wrong joins, wrong aggregation, hallucinated columns, and ambiguous questions.
+
+The available historical diagnostics confirm one wrong-aggregation case and several ambiguity-related cases. They do **not** establish confirmed counts for schema misunderstanding, wrong joins, or hallucinated columns. Those categories should not be assigned merely to fill out the taxonomy. The current evidence supports the additional categories of output-contract mismatch and result-ordering mismatch.
+
+## 5. Evaluation Method and Limitations
+
+The current evaluator in `evals/evaluate_agent.py`:
+
+1. Calls the agent for each question.
+2. Validates generated SQL before accepting it for evaluation.
+3. Executes the reference SQL against the local database.
+4. Compares returned column names exactly.
+5. Compares row values using a numeric tolerance.
+6. Compares rows in their original order.
+7. Records pass/fail status, error information, and failure categories.
+
+Exact column-name comparison can flag aliases or extra columns even when some business values match. Order-sensitive row comparison can flag different row orders when the question does not specify an order.
+
+These behaviors are limitations to account for when interpreting historical failures. They should not be silently ignored: extra columns, missing values, incorrect aggregates, and genuinely wrong rows can indicate real defects. Any change to comparison rules must be justified by the question's semantics and covered by regression tests.
+
+The evaluation also depends on the correctness of the golden set and reference SQL. An inaccurate expected result can incorrectly mark a valid agent response as a failure.
+
+## 6. Current Local Verification
+
+Previously recorded project verification includes:
+
+- **82 automated tests passed** using `python -m pytest -q`.
 - The golden-set consistency audit passed all 30 checks.
 - The reference SQL audit executed all 30 queries successfully.
-- The reference SQL audit made zero Groq API calls and modified no files.
-- SQL validation, destructive-statement rejection, and read-only execution are covered by automated tests.
-- Agent regression tests verify SQL-error recovery and refusal of the unsupported question "What is the weather on Mars?" without a Groq model call.
-- The Streamlit UI's unsupported-question refusal path was verified.
-- A live supported question, "Show the first five customers alphabetically by last name," was successfully executed through the Streamlit UI.
-- The UI displayed the generated SQL and the expected five customer rows.
-- A direct read-only database check independently confirmed the expected columns, values, and ordering.
+- The reference SQL audit made no Groq API calls and modified no files.
+- SQL validation, destructive-statement rejection, and read-only execution have automated test coverage.
+- Agent recovery and unsupported-question refusal have focused regression coverage.
+- A Streamlit smoke test verified an unsupported-question refusal.
+- A supported Streamlit query displayed generated SQL and the expected five customer rows, independently checked against the database.
 
-The latest local test run passed 82 tests. The focused recovery tests also passed 4/4. These checks verify implementation behavior and reference data, but they do not prove that generated SQL is always correct or establish overall live-query accuracy.
+In the current evaluation-taxonomy work, the focused evaluator tests also passed:
 
-## Failed attempts and limitations
+```powershell
+python -m pytest .\tests\test_evaluate_agent.py -q
+```
 
-A subsequent full model-evaluation attempt encountered Groq HTTP 429 token-per-day rate-limit errors. It recorded 8 passed answerable questions, 1 incorrect result, and 21 API errors. Because the run was incomplete, its 26.67% pass rate is not a valid full-run accuracy measurement.
+Result: **8 passed in 0.59 seconds.**
 
-Historical completed runs produced inconsistent results: 25/30, 3/30, and 21/30 answerable questions passed in earlier evaluations. The latest full evaluation, completed October 16, 2026, passed 30/30 answerable questions and correctly refused all 5 unanswerable questions. The earlier results remain documented for transparency and comparison.
+The taxonomy script ran successfully against both historical JSON files, classified all 24 recorded failures, and made no model calls.
 
-Local tests and offline audits verify implementation behavior and reference data, but they cannot guarantee correct SQL for arbitrary business questions. A passing safety test also does not guarantee that a generated query answers the user's question correctly.
+These verification results concern different checks and should not be conflated. In particular, passing offline tests does not establish that all possible live-generated SQL will be correct.
 
-The Streamlit checks verified an unsupported-question refusal and one successful supported query. A single successful example does not establish overall live-query accuracy.
+## 7. Reproducible Offline Checks
 
-## Next evaluation
+From the project root, with the virtual environment activated, run:
 
-When Groq quota is available:
+```powershell
+python .\evals\failure_taxonomy.py
+python -m pytest .\tests\test_evaluate_agent.py -q
+python -m pytest -q
+```
 
-1. Run the complete 30-question answerable evaluation and the 5-question refusal evaluation.
-2. Verify generated SQL, returned columns, and result values against the database.
-3. Check representative joins, aggregations, rankings, and filters.
-4. Preserve the raw output from each run without losing historical artifacts.
-5. Record completed questions, correct results, incorrect results, refusals, API errors, runtime, and pass rate.
-6. Compare the completed run with the preserved historical runs and categorize remaining failures.
+The first command regenerates the historical failure taxonomy from the saved reports. The second runs the focused evaluator tests. The third runs the full test suite.
 
-Do not count API errors as correct answers. Do not present an incomplete run as a completed benchmark, and preserve previous evaluation artifacts before running a new evaluation.
+**Do not run the full model evaluation merely to regenerate the taxonomy.** The evaluation script writes to `evals/evaluation_results_latest.json`; preserve the existing artifact before any future full evaluation.
 
-## Conclusion
+## 8. Next Evaluation Procedure
 
-The latest recorded full evaluation passed all 30 answerable questions and correctly refused all 5 unanswerable questions, completing 35/35 cases in 598.50 seconds. The current local verification also passed 82 automated tests, with the golden-set and reference SQL audits each passing all 30 checks.
+When Groq quota is available and a new model evaluation is intentionally scheduled:
 
-These results support the tested functionality but do not guarantee that every future natural-language question will produce correct SQL. Model availability, rate limits, query complexity, and the database schema can affect performance. The system should not be described as production-ready based on the available evidence.
+1. Preserve the existing evaluation artifact.
+2. Run the full 35-question benchmark.
+3. Check that all 30 answerable questions and all 5 unanswerable questions were evaluated.
+4. Verify generated SQL, output columns, values, joins, filters, aggregations, and ranking behavior.
+5. Separate incorrect answers from API errors and other runtime errors.
+6. Record the run timestamp, accuracy, refusal performance, runtime, and failure categories.
+7. Compare the new completed run with historical results.
+8. Investigate and document every remaining failure category.
+
+Do not count API errors as correct answers. Do not present an incomplete run as a completed benchmark.
+
+## 9. Conclusion
+
+The latest recorded full evaluation passed all 30 answerable questions and correctly refused all 5 unanswerable questions, for 35/35 passing cases in 598.50 seconds. The focused evaluator tests passed 8/8, and the historical taxonomy script successfully classified all failures in both reviewed reports without making model calls.
+
+The historical analysis shows that strict output-contract and row-order comparisons account for many recorded failures, while at least one case involved a genuine aggregation defect. This distinction is important when deciding what to fix next.
+
+The evidence supports the tested behavior and the latest recorded benchmark result. It does not guarantee that every future natural-language question will produce correct SQL, and it is not sufficient on its own to describe the system as production-ready.
