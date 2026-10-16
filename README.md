@@ -16,6 +16,14 @@ A Python application that converts natural-language business questions into SQL 
 - Automated tests for agent behavior, SQL safety, evaluation logic, and database tools
 - A 35-question evaluation dataset: 30 answerable and 5 unanswerable questions
 
+## Architecture Diagram
+
+![Text-to-SQL Agent Architecture](docs/architecture.png)
+
+The diagram illustrates the main components and flow of the Text-to-SQL Agent, from natural-language questions through SQL generation and validation to read-only database execution and results.
+
+
+
 ## Requirements
 
 - Python 3.12
@@ -24,10 +32,14 @@ A Python application that converts natural-language business questions into SQL 
 
 ## Setup
 
-From the project root, activate your virtual environment and install dependencies:
+Use Python 3.12 and run these commands from the project root in PowerShell.
+
+Create and activate a virtual environment, then install dependencies:
 
 ```powershell
+py -3.12 -m venv venv
 .\venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
@@ -38,7 +50,11 @@ GROQ_API_KEY=your_groq_api_key
 GROQ_MODEL=qwen/qwen3.8-27b
 ```
 
-Replace the placeholder with your own API key. Never commit `.env` or expose your API key. The application defaults to `qwen/qwen3.8-27b` when `GROQ_MODEL` is not set.
+Replace the placeholder with your own Groq API key. Never commit `.env` or expose your API key. The application defaults to `qwen/qwen3.8-27b` when `GROQ_MODEL` is not set.
+
+The repository includes the Chinook SQLite database at `data/chinook.db`. Confirm that it exists before running the application.
+
+Live model requests require a valid Groq API key and available API quota. Automated tests and database reference-query audits can run without making live model requests.
 
 ## Run the Streamlit UI
 
@@ -111,6 +127,10 @@ See `docs/EVALUATION_RESULTS.md` for the recorded measurements, failed attempts,
 
 ## Safety and limitations
 
-SQL validation and read-only database access reduce the risk of destructive queries. They do not guarantee that generated SQL is correct or that every natural-language question is interpreted accurately. Groq rate limits can also interrupt requests and evaluations.
+SQLGlot validation, read-only SQLite connections, and result limits reduce the risk of destructive queries. They do not guarantee that generated SQL is correct or that every natural-language question is interpreted accurately.
 
-The application is not yet demonstrated to be production-ready. The local test suite and reference-query audits passed in prior verification, and one supported query was verified through Streamlit. A complete, reliable follow-up model evaluation remains outstanding, so overall live SQL-generation accuracy is not yet established.
+The latest complete live evaluation tested 30 answerable questions and 5 unanswerable questions. It passed all 30 answerable questions (100%) and correctly refused all 5 unanswerable questions, with zero reported failures. The evaluation took approximately 598.5 seconds. These results describe the recorded evaluation dataset and do not guarantee the same accuracy on new questions.
+
+Earlier evaluation attempts encountered incorrect answers and Groq token-per-day rate limits. Historical results and limitations are documented in `docs/EVALUATION_RESULTS.md`.
+
+The project has a passing local test suite and recorded evaluation results, but it has not been demonstrated to be production-ready. Clean-clone reproducibility and deployment readiness must be verified separately.
