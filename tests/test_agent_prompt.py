@@ -1,4 +1,4 @@
-"""Offline regression tests for the active agent prompt."""
+﻿"""Offline regression tests for the active agent prompt."""
 
 from src.agent import SYSTEM_PROMPT
 
@@ -37,7 +37,7 @@ def test_prompt_requires_rounded_line_item_revenue():
 
 
 def test_prompt_requires_execution_and_error_correction():
-    assert "execute_readonly_sql" in SYSTEM_PROMPT
+    assert "run_query" in SYSTEM_PROMPT
     assert "correct the SQL" in SYSTEM_PROMPT
 
 

@@ -56,9 +56,9 @@
   },
   {
     "id": "Q010",
-    "question": "What was the total invoice revenue for each month of 2013?",
+    "question": "What was the total invoice revenue for each month of 2022?",
     "answerable": true,
-    "expected_sql": "SELECT strftime('%Y-%m', InvoiceDate) AS month, ROUND(SUM(Total), 2) AS revenue FROM Invoice WHERE InvoiceDate >= '2013-01-01' AND InvoiceDate < '2014-01-01' GROUP BY strftime('%Y-%m', InvoiceDate) ORDER BY month"
+    "expected_sql": "SELECT strftime('%Y-%m', InvoiceDate) AS month, ROUND(SUM(Total), 2) AS revenue FROM Invoice WHERE InvoiceDate >= '2022-01-01' AND InvoiceDate < '2023-01-01' GROUP BY strftime('%Y-%m', InvoiceDate) ORDER BY month"
   },
   {
     "id": "Q011",

@@ -1,4 +1,4 @@
-﻿# 🎵 Text-to-SQL Agent
+# 🎵 Text-to-SQL Agent
 
 A Python application that converts natural-language business questions into SQL queries for the Chinook SQLite music-store database using Groq and LangChain.
 
@@ -6,7 +6,7 @@ A Python application that converts natural-language business questions into SQL 
 
 - Natural-language question answering using a bounded tool-calling agent
 - Compact database schema and relationship context
-- Four database tools for table listing, schema inspection, database overview, and SQL execution
+- Six database tools for table listing, schema inspection, database overview, SQL execution, distinct-value lookup, and arithmetic
 - SQLGlot validation before execution
 - Read-only SQLite connections that prevent database writes
 - Automatic row limiting for query results
@@ -88,14 +88,16 @@ Unsupported questions can be refused without contacting Groq. Live supported que
 
 ## Database tools
 
-The agent exposes four tools:
+The agent exposes six registered tools:
 
-1. `list_database_tables` — lists available database tables.
-2. `inspect_database_table` — returns a table's columns and relationships.
-3. `get_database_overview` — provides an overview of the database schema.
-4. `execute_readonly_sql` — validates and executes a read-only SQL query.
+1. `list_database_tables` - lists available database tables.
+2. `inspect_schema` - inspects a table's columns, types, primary key, and foreign keys.
+3. `get_database_overview` - returns database tables and schema information.
+4. `run_query` - executes a validated, read-only SQL query.
+5. `get_distinct_values` - retrieves distinct column values to help resolve uncertain filters.
+6. `calculate` - evaluates basic arithmetic using a restricted expression evaluator.
 
-Generated SQL must pass the existing safety layer before execution. The database connection is read-only, destructive SQL is rejected, and results are limited to 100 rows.
+Generated SQL must pass the SQL safety layer before execution. The database connection is read-only, destructive SQL is rejected, and query results are limited to 100 rows.
 
 ## Run tests
 
