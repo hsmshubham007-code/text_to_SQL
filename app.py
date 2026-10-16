@@ -7,8 +7,13 @@ import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
 
-from src.agent import ask_agent
-
+from src.query_guardrails import requires_confirmation
+from src.sql_generator import (
+    UnsupportedQuestionError,
+    execute_sql_tool,
+    generate_sql,
+)
+from src.sql_safety import validate_sql
 
 load_dotenv()
 
@@ -19,18 +24,23 @@ st.set_page_config(
 )
 
 st.title("🎵 Text-to-SQL Agent")
-st.caption(
-    "Ask questions about the Chinook music-store database "
-    "using natural language."
-)
+st.caption("Ask business questions about the Chinook music-store database.")
 
-with st.sidebar:
-    st.header("Database safety")
-    st.success("Read-only SQL execution")
-    st.info("SQL validation is handled by the existing safety layer.")
-    st.caption("Maximum result size: 100 rows")
-    st.divider()
-    st.caption("Model: " + os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b"))
+st.sidebar.header("Database safety")
+st.sidebar.success("Read-only SQL execution")
+st.sidebar.info("SQL is validated before execution.")
+st.sidebar.caption("Maximum result size: 100 rows")
+st.sidebar.caption("Query timeout: 5 seconds")
+st.sidebar.caption(f"Model: {os.getenv('GROQ_MODEL', 'qwen/qwen3.8-27b')}")
+
+if "pending_question" not in st.session_state:
+    st.session_state.pending_question = None
+if "pending_sql" not in st.session_state:
+    st.session_state.pending_sql = None
+if "query_result" not in st.session_state:
+    st.session_state.query_result = None
+if "query_error" not in st.session_state:
+    st.session_state.query_error = None
 
 with st.form("question_form"):
     question = st.text_area(
@@ -44,74 +54,111 @@ with st.form("question_form"):
         height=120,
     )
     submitted = st.form_submit_button(
-        "Ask database",
+        "Generate SQL",
         type="primary",
         use_container_width=True,
     )
 
 if submitted:
+    st.session_state.pending_question = None
+    st.session_state.pending_sql = None
+    st.session_state.query_result = None
+    st.session_state.query_error = None
+
     if not question.strip():
         st.warning("Please enter a question first.")
     else:
-        with st.spinner("Analyzing your question and querying the database..."):
+        with st.spinner("Generating and validating SQL..."):
             try:
-                result = ask_agent(question.strip())
-
-                st.subheader("Answer")
-                if result.get("supported") is False:
-                    st.warning(result.get("answer", "This question is not supported."))
-                else:
-                    answer = result.get("answer")
-                    if answer:
-                        st.write(answer)
-                    else:
-                        st.info("The agent returned no natural-language answer.")
-
-                sql = result.get("sql")
-                st.subheader("Generated SQL")
-                if sql:
-                    st.code(sql, language="sql")
-                else:
-                    st.info("No SQL query was executed for this question.")
-
-                columns = result.get("columns", [])
-                rows = result.get("rows", [])
-
-                st.subheader("Query results")
-                if columns and rows:
-                    if isinstance(rows[0], dict):
-                        dataframe = pd.DataFrame(rows)
-                    else:
-                        dataframe = pd.DataFrame(rows, columns=columns)
-
-                    st.dataframe(
-                        dataframe,
-                        use_container_width=True,
-                        hide_index=True,
-                    )
-                elif result.get("refusal"):
-                    st.caption("No database query was needed.")
-                else:
-                    st.info("The query returned no rows.")
-
-                col1, col2 = st.columns(2)
-                col1.metric("Rows returned", result.get("row_count", len(rows)))
-                col2.metric("SQL execution attempts", result.get("attempts", 0))
-
-                if result.get("limit_reached"):
-                    st.warning(
-                        "The agent reached its tool-call limit before finishing. "
-                        "Try a more specific question."
-                    )
-
+                sql = generate_sql(question.strip())
+                sql = validate_sql(sql)
+                st.session_state.pending_question = question.strip()
+                st.session_state.pending_sql = sql
+            except UnsupportedQuestionError as error:
+                st.warning(str(error))
             except Exception as error:
-                st.error("The request could not be completed.")
-                message = str(error)
+                st.error("SQL could not be generated or validated.")
+                st.caption(str(error))
 
-                if "429" in message or "rate limit" in message.lower():
-                    st.warning(
-                        "The Groq API rate limit may have been reached. "
-                        "Wait for the quota to reset before trying again."
-                    )
-                else:
-                    st.caption(f"Error details: {message}")
+pending_sql = st.session_state.pending_sql
+pending_question = st.session_state.pending_question
+
+if pending_sql:
+    st.subheader("Review generated SQL")
+    st.code(pending_sql, language="sql")
+
+    try:
+        confirmation_required = requires_confirmation(pending_sql)
+    except Exception:
+        confirmation_required = True
+
+    if confirmation_required:
+        st.warning(
+            "This query may be expensive. Review the SQL and confirm before "
+            "execution. The query timeout and row limit still apply."
+        )
+    else:
+        st.info("Review the SQL before running this query.")
+
+    with st.form("execution_confirmation_form"):
+        confirmed = st.checkbox(
+            "I have reviewed the SQL and want to execute this query."
+        )
+        run_query = st.form_submit_button(
+            "Confirm and execute",
+            type="primary",
+            use_container_width=True,
+        )
+
+    if run_query:
+        if not confirmed:
+            st.warning("Please confirm before executing the query.")
+        else:
+            with st.spinner("Executing validated read-only SQL..."):
+                try:
+                    # Validate again immediately before execution.
+                    safe_sql = validate_sql(pending_sql)
+                    raw_result = execute_sql_tool(safe_sql)
+                    import json
+
+                    result = json.loads(raw_result)
+                    st.session_state.query_result = result
+                    st.session_state.query_error = None
+                    st.session_state.pending_sql = None
+                except Exception as error:
+                    st.session_state.query_error = str(error)
+
+if st.session_state.query_error:
+    st.error("The query could not be executed.")
+    message = st.session_state.query_error
+    if "timeout" in message.lower():
+        st.warning("The query exceeded its execution time limit.")
+    st.caption(message)
+
+result = st.session_state.query_result
+
+if result:
+    st.subheader("Answer")
+    st.write(
+        f"The query completed successfully and returned "
+        f"{result.get('row_count', 0)} row(s)."
+    )
+
+    st.subheader("Executed SQL")
+    st.code(result.get("sql", ""), language="sql")
+
+    st.subheader("Query results")
+    columns = result.get("columns", [])
+    rows = result.get("rows", [])
+
+    if columns:
+        if rows and isinstance(rows[0], dict):
+            dataframe = pd.DataFrame(rows)
+        else:
+            dataframe = pd.DataFrame(rows, columns=columns)
+
+        st.dataframe(dataframe, use_container_width=True, hide_index=True)
+    else:
+        st.info("The query returned no columns.")
+
+    st.metric("Rows returned", result.get("row_count", len(rows)))

@@ -2,6 +2,7 @@
 
 import re
 import sqlite3
+import time
 from pathlib import Path
 
 import sqlglot
@@ -11,6 +12,7 @@ from sqlglot import exp
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATABASE_PATH = PROJECT_ROOT / "data" / "chinook.db"
 MAX_ROWS = 100
+QUERY_TIMEOUT_SECONDS = 5
 
 
 def validate_sql(sql: str) -> str:
@@ -18,7 +20,6 @@ def validate_sql(sql: str) -> str:
     if not sql or not sql.strip():
         raise ValueError("SQL query cannot be empty.")
 
-    # Reject missing whitespace without rejecting the valid ASC keyword.
     if re.search(r"\bFROM(?=[A-Za-z_])", sql, re.IGNORECASE):
         raise ValueError("Invalid SQL syntax: missing space after FROM.")
 
@@ -70,14 +71,47 @@ def validate_sql(sql: str) -> str:
 
 
 def execute_sql(sql: str) -> dict:
-    """Execute a validated query using a read-only SQLite connection."""
+    """Execute validated SQL read-only with a row cap and time limit."""
     safe_sql = validate_sql(sql)
+    timeout = QUERY_TIMEOUT_SECONDS
+    deadline = time.monotonic() + timeout
+    timed_out = False
+
+    def check_deadline() -> int:
+        nonlocal timed_out
+
+        if time.monotonic() >= deadline:
+            timed_out = True
+            return 1
+
+        return 0
+
     database_uri = DATABASE_PATH.resolve().as_uri() + "?mode=ro"
 
     with sqlite3.connect(database_uri, uri=True) as connection:
-        cursor = connection.execute(safe_sql)
-        columns = [column[0] for column in cursor.description]
-        rows = [list(row) for row in cursor.fetchall()]
+        connection.set_progress_handler(check_deadline, 1000)
+
+        try:
+            # Check immediately so even a short query cannot bypass
+            # an already-expired deadline.
+            if check_deadline():
+                raise TimeoutError(
+                    f"SQL query exceeded the {timeout}-second timeout."
+                )
+
+            cursor = connection.execute(safe_sql)
+            columns = [column[0] for column in cursor.description]
+            rows = [list(row) for row in cursor.fetchall()]
+
+        except sqlite3.OperationalError as exc:
+            if timed_out:
+                raise TimeoutError(
+                    f"SQL query exceeded the {timeout}-second timeout."
+                ) from exc
+            raise
+
+        finally:
+            connection.set_progress_handler(None, 0)
 
     return {
         "columns": columns,

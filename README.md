@@ -1,40 +1,40 @@
+
 # 🎵 Text-to-SQL Agent
 
-A Python application that converts natural-language business questions into SQL queries for the Chinook SQLite music-store database using Groq and LangChain.
+A Python application that converts natural-language business questions into SQL queries for the Chinook SQLite music-store database using Groq, LangChain, SQLGlot, and Streamlit.
 
 ## Features
 
-- Natural-language question answering using a bounded tool-calling agent
+- Natural-language SQL generation using Groq
 - Compact database schema and relationship context
-- Six database tools for table listing, schema inspection, database overview, SQL execution, distinct-value lookup, and arithmetic
+- Six database tools for schema inspection, read-only querying, distinct-value lookup, and arithmetic
 - SQLGlot validation before execution
-- Read-only SQLite connections that prevent database writes
-- Automatic row limiting for query results
-- Bounded SQL correction and retry logic
-- Configured refusals for unsupported question categories
-- Streamlit UI displaying answers, generated SQL, and query results
-- Automated tests for agent behavior, SQL safety, evaluation logic, and database tools
+- Read-only SQLite connections
+- Automatic result limiting to 100 rows
+- Five-second SQL execution timeout
+- Query-risk classification and confirmation before potentially expensive queries
+- SQL preview before execution
+- Bounded SQL correction and retry logic in the agent workflow
+- Refusals for configured unsupported question categories
+- Streamlit UI displaying generated SQL and query results
+- Automated tests for agent behavior, SQL safety, query guardrails, timeout handling, and prompt-injection scenarios
 - A 35-question evaluation dataset: 30 answerable and 5 unanswerable questions
 
 ## Architecture Diagram
 
 ![Text-to-SQL Agent Architecture](docs/architecture.png)
 
-The diagram illustrates the main components and flow of the Text-to-SQL Agent, from natural-language questions through SQL generation and validation to read-only database execution and results.
-
-
+The application generates SQL from a natural-language question, validates the SQL, and executes approved queries through a read-only SQLite connection.
 
 ## Requirements
 
 - Python 3.12
-- A Groq API key for live model requests
+- A Groq API key for live SQL generation
 - Dependencies listed in `requirements.txt`
 
 ## Setup
 
-Use Python 3.12 and run these commands from the project root in PowerShell.
-
-Create and activate a virtual environment, then install dependencies:
+Run these commands from the project root in PowerShell:
 
 ```powershell
 py -3.12 -m venv venv
@@ -43,22 +43,22 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-Create a local `.env` file in the project root:
+Create a `.env` file in the project root:
 
 ```text
 GROQ_API_KEY=your_groq_api_key
 GROQ_MODEL=qwen/qwen3.8-27b
 ```
 
-Replace the placeholder with your own Groq API key. Never commit `.env` or expose your API key. The application defaults to `qwen/qwen3.8-27b` when `GROQ_MODEL` is not set.
+Replace the placeholder with your own Groq API key. Never commit `.env` or expose your key.
 
-The repository includes the Chinook SQLite database at `data/chinook.db`. Confirm that it exists before running the application.
+The repository includes the Chinook database at `data/chinook.db`. Verify that it exists before running the application.
 
-Live model requests require a valid Groq API key and available API quota. Automated tests and database reference-query audits can run without making live model requests.
+Live model requests require a valid Groq API key and available API quota. Automated regression tests should use mocks where possible and must not require live API calls.
 
 ## Run the Streamlit UI
 
-From the project root, run:
+From the project root, activate the virtual environment and run:
 
 ```powershell
 python -m streamlit run .\app.py
@@ -66,73 +66,82 @@ python -m streamlit run .\app.py
 
 Open the local URL displayed by Streamlit, usually `http://localhost:8501`.
 
-Enter a business question and select **Ask database**. The interface displays the natural-language answer, generated SQL when available, query results, returned row count, and SQL execution attempts.
+1. Enter a business question.
+2. Select **Generate SQL**.
+3. Review the generated SQL.
+4. If the query is classified as potentially expensive, review the warning.
+5. Check the confirmation box and select **Confirm and execute**.
+6. Review the executed SQL and returned rows.
 
-Unsupported questions can be refused without contacting Groq. Live supported questions require available Groq API quota.
+The application requires explicit confirmation before executing a displayed query. The SQL is validated again immediately before execution.
 
-## Agent architecture
+The interface currently displays an execution summary and result table rather than a model-generated natural-language interpretation of the result.
+
+## Architecture and important files
 
 - `app.py` — Streamlit user interface
-- `src/agent.py` — bounded tool-calling agent and structured response
-- `src/agent_tools.py` — four LangChain database tools
-- `src/sql_generator.py` — SQL generation, unsupported-question checks, validation, and correction logic
+- `src/agent.py` — bounded tool-calling agent
+- `src/agent_tools.py` — registered agent tools
+- `src/sql_generator.py` — SQL generation, validation, and correction logic
 - `src/sql_safety.py` — SQL validation and read-only execution safeguards
-- `src/database_tools.py` — database table inspection and query execution
+- `src/query_guardrails.py` — query-risk classification
+- `src/database_tools.py` — database access helpers
 - `src/inspect_schema.py` — schema inspection utility
 - `data/chinook.db` — SQLite database
 - `prompts/sql_generation.txt` — SQL-generation prompt
-- `evals/` — evaluation scripts, golden set, audits, and result reports
+- `evals/` — evaluation scripts, golden set, and evaluation reports
 - `tests/` — automated tests
 - `docs/SCHEMA.md` — database schema documentation
-- `docs/EVALUATION_RESULTS.md` — recorded measurements, limitations, and failed evaluation attempts
+- `docs/EVALUATION_RESULTS.md` — historical evaluation measurements and limitations
+- `docs/TASK4_RESULTS.md` — Task 4 safety and UI verification report
 
-## Database tools
+## Safety controls
 
-The agent exposes six registered tools:
+The application applies multiple safeguards:
 
-1. `list_database_tables` - lists available database tables.
-2. `inspect_schema` - inspects a table's columns, types, primary key, and foreign keys.
-3. `get_database_overview` - returns database tables and schema information.
-4. `run_query` - executes a validated, read-only SQL query.
-5. `get_distinct_values` - retrieves distinct column values to help resolve uncertain filters.
-6. `calculate` - evaluates basic arithmetic using a restricted expression evaluator.
+- Only validated, read-only SQL is accepted.
+- Destructive SQL and multiple SQL statements are rejected.
+- Results are capped at 100 rows.
+- Query execution has a configured five-second timeout.
+- Potentially expensive queries require user confirmation.
+- SQL is validated again immediately before execution.
 
-Generated SQL must pass the SQL safety layer before execution. The database connection is read-only, destructive SQL is rejected, and query results are limited to 100 rows.
+The query-risk classifier uses SQL structure as a heuristic; it is not a database query planner and does not estimate actual execution cost. The timeout, row limit, read-only connection, and SQL validation remain necessary regardless of classification.
+
+Prompt-injection regression tests simulate malicious model output and verify that destructive SQL is rejected. These offline tests do not establish immunity to every prompt-injection technique.
 
 ## Run tests
 
+Activate the project virtual environment, then run:
+
 ```powershell
 $env:PYTHONPATH = (Get-Location).Path
-pytest -q
+python -m pytest -q
 ```
 
-Latest local verification: **77 tests passed**. This result was confirmed after the latest SQL safety changes.
-
-Run the dataset and reference-query audits separately when needed:
+Run focused Task 4 guardrail tests:
 
 ```powershell
-python .\evals\audit_golden_set.py
-python .\evals\audit_reference_sql.py
+python -m pytest .\tests\test_query_guardrails.py .\tests\test_sql_timeout.py .\tests\test_sql_safety.py .\tests\test_read_only_execution.py .\tests\test_prompt_injection.py -q
 ```
 
-The last recorded audits passed all 30 golden-set consistency checks and executed all 30 reference SQL queries successfully without Groq API calls.
+The recorded focused Task 4 test run passed all 46 tests. Run the complete test suite again after the final changes to establish the current overall result.
 
 ## Evaluation status
 
 The evaluation dataset contains 30 answerable questions and 5 unanswerable questions.
 
-Evaluation history includes a recorded initial model run that passed 11 of 30 answerable questions (36.67%) and correctly refused all 5 unanswerable questions. A later attempt passed 8 questions, recorded 1 incorrect result, and encountered 21 API errors caused by Groq token-per-day rate limits.
+Historical evaluation attempts included an initial run that passed 11 of 30 answerable questions (36.67%) and correctly refused all 5 unanswerable questions. Another incomplete run passed 8 questions, recorded 1 incorrect result, and encountered 21 API errors caused by Groq token-per-day limits.
 
-The incomplete run's 26.67% pass rate is not a valid full-run accuracy measurement. The latest complete evaluation subsequently passed all 30 answerable questions (100%) and correctly refused all 5 unanswerable questions, with zero reported failures. Historical results are retained for transparency. See docs/EVALUATION_RESULTS.md for the evaluation history and limitations.
+A later complete recorded evaluation passed all 30 answerable questions and correctly refused all 5 unanswerable questions. These measurements apply to the recorded dataset and do not guarantee accuracy on new questions.
 
-See `docs/EVALUATION_RESULTS.md` for the recorded measurements, failed attempts, and limitations.
+See `docs/EVALUATION_RESULTS.md` for historical results, failed attempts, and limitations.
 
-## Safety and limitations
+## Limitations
 
-SQLGlot validation, read-only SQLite connections, and result limits reduce the risk of destructive queries. They do not guarantee that generated SQL is correct or that every natural-language question is interpreted accurately.
-
-The latest complete live evaluation tested 30 answerable questions and 5 unanswerable questions. It passed all 30 answerable questions (100%) and correctly refused all 5 unanswerable questions, with zero reported failures. The evaluation took approximately 598.5 seconds. These results describe the recorded evaluation dataset and do not guarantee the same accuracy on new questions.
-
-Earlier evaluation attempts encountered incorrect answers and Groq token-per-day rate limits. Historical results and limitations are documented in `docs/EVALUATION_RESULTS.md`.
-
-The project has a passing local test suite and recorded evaluation results, but it has not been demonstrated to be production-ready. Clean-clone reproducibility and deployment readiness must be verified separately.
+- SQL generation depends on Groq availability and quota.
+- Query-risk classification is heuristic and may misclassify expensive queries.
+- A timeout and row limit do not guarantee low resource usage for every query.
+- Prompt-injection regression tests cover selected simulated cases, not every possible attack.
+- The current UI provides an execution summary rather than an LLM-generated explanation of returned data.
+- Local UI and test verification do not constitute a production deployment or independent security audit.
