@@ -55,6 +55,20 @@ This was an incomplete run. Its apparent pass rate must not be reported as a com
 
 The offline script `evals/failure_taxonomy.py` classifies failures in two historical artifacts using reviewed root-cause labels. It writes the machine-readable output to `evals/failure_taxonomy.json`.
 
+### Measured follow-up and remaining uncertainty
+
+The saved evaluation artifacts show the following recorded results:
+
+| Evaluation artifact | Answerable questions passed | Answerable accuracy | Unanswerable refusals passed | Recorded failures |
+|---|---:|---:|---:|---:|
+| `evaluation_results.json` | 11/30 | 36.67% | Not established by this row | 19 |
+| `evaluation_results_before_agent.json` | 25/30 | 83.33% | Not established by this row | 5 |
+| `evaluation_results_latest.json` | 30/30 | 100% | 5/5 | 0 |
+
+The initial historical report identified output-contract mismatch as the largest reviewed failure category, accounting for 14 of its 19 failures. The latest saved full evaluation records 30/30 answerable questions passed, all 5 unanswerable questions correctly refused, and zero recorded failures.
+
+These artifacts demonstrate improved recorded evaluation outcomes. They do not, by themselves, establish which individual code change caused the improvement. The historical reports are separate evaluation runs and should not be combined into one benchmark. The latest result is a saved result, not a new run performed during this documentation update.
+
 ### Historical run: `evaluation_results.json`
 
 | Reviewed root cause | Count |
@@ -112,6 +126,7 @@ The evaluation also depends on the correctness of the golden set and reference S
 
 Previously recorded project verification includes:
 
+- **Final full test suite: 101 passed in 0.81 seconds**, verified after the latest documentation and test changes.
 - **82 automated tests passed** using `python -m pytest -q`.
 - The golden-set consistency audit passed all 30 checks.
 - The reference SQL audit executed all 30 queries successfully.
@@ -166,6 +181,6 @@ Do not count API errors as correct answers. Do not present an incomplete run as 
 
 The latest recorded full evaluation passed all 30 answerable questions and correctly refused all 5 unanswerable questions, for 35/35 passing cases in 598.50 seconds. The focused evaluator tests passed 8/8, and the historical taxonomy script successfully classified all failures in both reviewed reports without making model calls.
 
-The historical analysis shows that strict output-contract and row-order comparisons account for many recorded failures, while at least one case involved a genuine aggregation defect. This distinction is important when deciding what to fix next.
+The historical analysis shows that output-contract mismatches and result-ordering differences accounted for many of the reviewed failures. These findings help prioritize future improvements, but they do not establish which code changes caused the latest improvement.
 
 The evidence supports the tested behavior and the latest recorded benchmark result. It does not guarantee that every future natural-language question will produce correct SQL, and it is not sufficient on its own to describe the system as production-ready.
