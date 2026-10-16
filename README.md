@@ -7,7 +7,7 @@ A Python application that converts natural-language business questions into SQL 
 
 - Natural-language SQL generation using Groq
 - Compact database schema and relationship context
-- Six database tools for schema inspection, read-only querying, distinct-value lookup, and arithmetic
+- Seven database tools for schema inspection, read-only querying, distinct-value lookup, and arithmetic
 - SQLGlot validation before execution
 - Read-only SQLite connections
 - Automatic result limiting to 100 rows
