@@ -34,7 +34,7 @@ A separate attempted run recorded 8 passed answerable questions, 1 incorrect res
 
 An earlier report also recorded an 11/30 result (36.67%). Its corresponding raw artifact has not been identified in the JSON files inspected, so it should not be confused with the preserved measurements above.
 
-These runs produced substantially different results. The latest recorded artifact reports 21/30 answerable questions passed and 5/5 correct refusals, but it also contains seven runtime/API errors. Its timestamp is October 15, 2026. It predates the latest prompt and SQL-safety changes, so it does not establish the performance of the current code. No new complete model evaluation has been verified after those changes.
+A fresh full evaluation was completed on October 16, 2026, after the latest prompt and SQL-safety changes. All 30 answerable questions passed (100% accuracy), and all 5 unanswerable questions were correctly refused. The saved artifact contains 35 result records, no failed records, and zero runtime/API errors. The run took 598.50 seconds. This is the latest recorded evaluation; future model or environment changes may produce different results.
 
 ## Current local verification
 
@@ -57,7 +57,7 @@ The local test result reflects the latest reported test run. The dataset audits 
 
 A subsequent full model-evaluation attempt encountered Groq HTTP 429 token-per-day rate-limit errors. It recorded 8 passed answerable questions, 1 incorrect result, and 21 API errors. Because the run was incomplete, its 26.67% pass rate is not a valid full-run accuracy measurement.
 
-The preserved completed runs also show inconsistent results: 25/30 answerable questions passed in the earliest artifact, 3/30 in the next artifact, and 21/30 in the latest recorded artifact. The latest recorded run still had seven errors. These results show that live SQL-generation reliability has not been established.
+Historical completed runs produced inconsistent results: 25/30, 3/30, and 21/30 answerable questions passed in earlier evaluations. The latest full evaluation, completed October 16, 2026, passed 30/30 answerable questions and correctly refused all 5 unanswerable questions. The earlier results remain documented for transparency and comparison.
 
 Local tests and offline audits verify implementation behavior and reference data, but they cannot guarantee correct SQL for arbitrary business questions. A passing safety test also does not guarantee that a generated query answers the user's question correctly.
 
@@ -80,6 +80,6 @@ Do not count API errors as correct answers. Do not present an incomplete run as 
 
 The latest reported local test suite passed 77 tests. Previously completed offline dataset audits passed their 30-check validations, and the Streamlit interface, unsupported-question refusal path, and one live supported query were verified.
 
-The latest recorded model evaluation reported 21/30 answerable questions passed (70%), 2 incorrect results, 7 errors, and 5/5 correct unanswerable refusals. Because this evaluation predates the latest prompt and SQL-safety changes, the current code's full live-evaluation performance remains unverified.
+The latest recorded model evaluation, timestamped October 16, 2026, passed 30/30 answerable questions (100%), correctly refused 5/5 unanswerable questions, and reported zero failures. The evaluation took 598.50 seconds. Results are recorded in evals/evaluation_results_latest.json. This is a successful full benchmark, although future model/API runs may produce different results.
 
 The system should not be described as production-ready based on the available evidence.

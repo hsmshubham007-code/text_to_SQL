@@ -105,7 +105,7 @@ The evaluation dataset contains 30 answerable questions and 5 unanswerable quest
 
 Evaluation history includes a recorded initial model run that passed 11 of 30 answerable questions (36.67%) and correctly refused all 5 unanswerable questions. A later attempt passed 8 questions, recorded 1 incorrect result, and encountered 21 API errors caused by Groq token-per-day rate limits.
 
-The later run is incomplete, and its 26.67% pass rate is **not a valid full-run accuracy measurement**. Other recorded complete runs produced substantially different results, so overall live SQL-generation accuracy remains unverified. Historical results have been retained rather than overwritten.
+The incomplete run's 26.67% pass rate is not a valid full-run accuracy measurement. The latest complete evaluation subsequently passed all 30 answerable questions (100%) and correctly refused all 5 unanswerable questions, with zero reported failures. Historical results are retained for transparency. See docs/EVALUATION_RESULTS.md for the evaluation history and limitations.
 
 See `docs/EVALUATION_RESULTS.md` for the recorded measurements, failed attempts, and limitations.
 

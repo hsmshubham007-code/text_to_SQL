@@ -1,12 +1,12 @@
 {
-  "timestamp_utc": "2026-10-15T11:41:38.865311+00:00",
+  "timestamp_utc": "2026-10-16T07:37:02.523603+00:00",
   "questions_evaluated": 35,
   "answerable": {
     "total": 30,
-    "passed": 21,
-    "incorrect_results": 2,
-    "errors": 7,
-    "accuracy": 0.7
+    "passed": 30,
+    "incorrect_results": 0,
+    "errors": 0,
+    "accuracy": 1.0
   },
   "unanswerable": {
     "total": 5,
@@ -14,11 +14,8 @@
     "refusal_failed": 0,
     "refusal_support_implemented": true
   },
-  "failure_counts": {
-    "incorrect_columns": 2,
-    "error": 7
-  },
-  "elapsed_seconds": 391.27,
+  "failure_counts": {},
+  "elapsed_seconds": 598.5,
   "results": [
     {
       "id": "Q001",
@@ -532,7 +529,7 @@
       "answerable": true,
       "status": "PASS",
       "failure_category": null,
-      "generated_sql": "SELECT COUNT(Invoice.InvoiceId) AS invoice_count FROM Invoice WHERE Invoice.InvoiceDate >= '2012-01-01' AND Invoice.InvoiceDate < '2013-01-01' LIMIT 100",
+      "generated_sql": "SELECT COUNT(InvoiceId) AS invoice_count FROM Invoice WHERE InvoiceDate >= '2012-01-01' AND InvoiceDate < '2013-01-01' LIMIT 100",
       "expected_columns": [
         "invoice_count"
       ],
@@ -662,15 +659,15 @@
       "id": "Q011",
       "question": "Which five billing countries generated the most invoice revenue?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT Invoice.BillingCountry AS billing_country, ROUND(SUM(Invoice.Total), 2) AS revenue FROM Invoice GROUP BY Invoice.BillingCountry ORDER BY revenue DESC, billing_country ASC LIMIT 5",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Invoice.BillingCountry AS country, ROUND(SUM(Invoice.Total), 2) AS revenue FROM Invoice GROUP BY Invoice.BillingCountry ORDER BY revenue DESC, country ASC LIMIT 5",
       "expected_columns": [
         "country",
         "revenue"
       ],
       "actual_columns": [
-        "billing_country",
+        "country",
         "revenue"
       ],
       "expected_rows": [
@@ -788,7 +785,7 @@
       "answerable": true,
       "status": "PASS",
       "failure_category": null,
-      "generated_sql": "SELECT Artist.Name AS artist, COUNT(Album.AlbumId) AS album_count FROM Artist JOIN Album ON Artist.ArtistId = Album.ArtistId GROUP BY Artist.ArtistId, Artist.Name ORDER BY album_count DESC, artist ASC LIMIT 5",
+      "generated_sql": "SELECT Artist.Name AS artist, COUNT(Album.AlbumId) AS album_count FROM Artist JOIN Album ON Artist.ArtistId = Album.ArtistId GROUP BY Artist.ArtistId, Artist.Name ORDER BY album_count DESC, Artist.Name ASC LIMIT 5",
       "expected_columns": [
         "artist",
         "album_count"
@@ -848,16 +845,16 @@
       "id": "Q014",
       "question": "What is the average track length in minutes for each of the five longest-average genres?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT Genre.Name AS genre, ROUND(AVG(Track.Milliseconds) / 60000.0, 2) AS avg_track_length_minutes FROM Genre JOIN Track ON Genre.GenreId = Track.GenreId GROUP BY Genre.GenreId, Genre.Name ORDER BY avg_track_length_minutes DESC, genre ASC LIMIT 5",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Genre.Name AS genre, ROUND(AVG(Track.Milliseconds) / 60000.0, 2) AS average_minutes FROM Genre JOIN Track ON Genre.GenreId = Track.GenreId GROUP BY Genre.GenreId, Genre.Name ORDER BY average_minutes DESC, genre ASC LIMIT 5",
       "expected_columns": [
         "genre",
         "average_minutes"
       ],
       "actual_columns": [
         "genre",
-        "avg_track_length_minutes"
+        "average_minutes"
       ],
       "expected_rows": [
         [
@@ -1036,7 +1033,7 @@
       "answerable": true,
       "status": "PASS",
       "failure_category": null,
-      "generated_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName FROM Customer WHERE NOT EXISTS(SELECT 1 FROM Invoice WHERE Invoice.CustomerId = Customer.CustomerId) ORDER BY Customer.LastName ASC, Customer.FirstName ASC, Customer.CustomerId ASC LIMIT 100",
+      "generated_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName FROM Customer WHERE NOT EXISTS(SELECT 1 FROM Invoice WHERE Invoice.CustomerId = Customer.CustomerId) ORDER BY Customer.LastName ASC, Customer.FirstName ASC LIMIT 100",
       "expected_columns": [
         "CustomerId",
         "FirstName",
@@ -1604,98 +1601,650 @@
       "id": "Q024",
       "question": "Which five playlists contain the most tracks?",
       "answerable": true,
-      "status": "ERROR",
-      "failure_category": "error",
-      "generated_sql": null,
-      "expected_columns": null,
-      "actual_columns": [],
-      "expected_rows": null,
-      "actual_rows": [],
-      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198197, Requested 2326. Please try again in 3m45.936s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Playlist.Name AS playlist, COUNT(PlaylistTrack.TrackId) AS track_count FROM Playlist JOIN PlaylistTrack ON Playlist.PlaylistId = PlaylistTrack.PlaylistId GROUP BY Playlist.PlaylistId, Playlist.Name ORDER BY track_count DESC, Playlist.Name ASC LIMIT 5",
+      "expected_columns": [
+        "playlist",
+        "track_count"
+      ],
+      "actual_columns": [
+        "playlist",
+        "track_count"
+      ],
+      "expected_rows": [
+        [
+          "Music",
+          3290
+        ],
+        [
+          "Music",
+          3290
+        ],
+        [
+          "90’s Music",
+          1477
+        ],
+        [
+          "TV Shows",
+          213
+        ],
+        [
+          "TV Shows",
+          213
+        ]
+      ],
+      "actual_rows": [
+        [
+          "Music",
+          3290
+        ],
+        [
+          "Music",
+          3290
+        ],
+        [
+          "90’s Music",
+          1477
+        ],
+        [
+          "TV Shows",
+          213
+        ],
+        [
+          "TV Shows",
+          213
+        ]
+      ],
+      "error": null,
       "refusal": null
     },
     {
       "id": "Q025",
       "question": "Which albums contain more than 20 tracks?",
       "answerable": true,
-      "status": "ERROR",
-      "failure_category": "error",
-      "generated_sql": null,
-      "expected_columns": null,
-      "actual_columns": [],
-      "expected_rows": null,
-      "actual_rows": [],
-      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198195, Requested 2328. Please try again in 3m45.936s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Album.Title AS album, COUNT(Track.TrackId) AS track_count FROM Album JOIN Track ON Album.AlbumId = Track.AlbumId GROUP BY Album.AlbumId, Album.Title HAVING COUNT(Track.TrackId) > 20 ORDER BY track_count DESC, album ASC LIMIT 100",
+      "expected_columns": [
+        "album",
+        "track_count"
+      ],
+      "actual_columns": [
+        "album",
+        "track_count"
+      ],
+      "expected_rows": [
+        [
+          "Greatest Hits",
+          57
+        ],
+        [
+          "Minha Historia",
+          34
+        ],
+        [
+          "Unplugged",
+          30
+        ],
+        [
+          "Lost, Season 3",
+          26
+        ],
+        [
+          "Lost, Season 1",
+          25
+        ],
+        [
+          "The Office, Season 3",
+          25
+        ],
+        [
+          "Battlestar Galactica (Classic), Season 1",
+          24
+        ],
+        [
+          "Lost, Season 2",
+          24
+        ],
+        [
+          "My Way: The Best Of Frank Sinatra [Disc 1]",
+          24
+        ],
+        [
+          "Afrociberdelia",
+          23
+        ],
+        [
+          "Heroes, Season 1",
+          23
+        ],
+        [
+          "Instant Karma: The Amnesty International Campaign to Save Darfur",
+          23
+        ],
+        [
+          "Acústico",
+          22
+        ],
+        [
+          "The Office, Season 2",
+          22
+        ],
+        [
+          "Up An' Atom",
+          22
+        ],
+        [
+          "Acústico MTV",
+          21
+        ],
+        [
+          "International Superhits",
+          21
+        ]
+      ],
+      "actual_rows": [
+        [
+          "Greatest Hits",
+          57
+        ],
+        [
+          "Minha Historia",
+          34
+        ],
+        [
+          "Unplugged",
+          30
+        ],
+        [
+          "Lost, Season 3",
+          26
+        ],
+        [
+          "Lost, Season 1",
+          25
+        ],
+        [
+          "The Office, Season 3",
+          25
+        ],
+        [
+          "Battlestar Galactica (Classic), Season 1",
+          24
+        ],
+        [
+          "Lost, Season 2",
+          24
+        ],
+        [
+          "My Way: The Best Of Frank Sinatra [Disc 1]",
+          24
+        ],
+        [
+          "Afrociberdelia",
+          23
+        ],
+        [
+          "Heroes, Season 1",
+          23
+        ],
+        [
+          "Instant Karma: The Amnesty International Campaign to Save Darfur",
+          23
+        ],
+        [
+          "Acústico",
+          22
+        ],
+        [
+          "The Office, Season 2",
+          22
+        ],
+        [
+          "Up An' Atom",
+          22
+        ],
+        [
+          "Acústico MTV",
+          21
+        ],
+        [
+          "International Superhits",
+          21
+        ]
+      ],
+      "error": null,
       "refusal": null
     },
     {
       "id": "Q026",
       "question": "Which customers have spent more than 40 dollars in total invoice amounts?",
       "answerable": true,
-      "status": "ERROR",
-      "failure_category": "error",
-      "generated_sql": null,
-      "expected_columns": null,
-      "actual_columns": [],
-      "expected_rows": null,
-      "actual_rows": [],
-      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198192, Requested 2333. Please try again in 3m46.8s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName, ROUND(SUM(Invoice.Total), 2) AS total_spending FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY Customer.CustomerId, Customer.FirstName, Customer.LastName HAVING SUM(Invoice.Total) > 40 ORDER BY total_spending DESC, Customer.LastName ASC, Customer.CustomerId ASC LIMIT 100",
+      "expected_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "total_spending"
+      ],
+      "actual_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "total_spending"
+      ],
+      "expected_rows": [
+        [
+          6,
+          "Helena",
+          "Holý",
+          49.62
+        ],
+        [
+          26,
+          "Richard",
+          "Cunningham",
+          47.62
+        ],
+        [
+          57,
+          "Luis",
+          "Rojas",
+          46.62
+        ],
+        [
+          45,
+          "Ladislav",
+          "Kovács",
+          45.62
+        ],
+        [
+          46,
+          "Hugh",
+          "O'Reilly",
+          45.62
+        ],
+        [
+          28,
+          "Julia",
+          "Barnett",
+          43.62
+        ],
+        [
+          24,
+          "Frank",
+          "Ralston",
+          43.62
+        ],
+        [
+          37,
+          "Fynn",
+          "Zimmermann",
+          43.62
+        ],
+        [
+          7,
+          "Astrid",
+          "Gruber",
+          42.62
+        ],
+        [
+          25,
+          "Victor",
+          "Stevens",
+          42.62
+        ],
+        [
+          44,
+          "Terhi",
+          "Hämäläinen",
+          41.62
+        ],
+        [
+          43,
+          "Isabelle",
+          "Mercier",
+          40.62
+        ],
+        [
+          48,
+          "Johannes",
+          "Van der Berg",
+          40.62
+        ],
+        [
+          5,
+          "František",
+          "Wichterlová",
+          40.62
+        ]
+      ],
+      "actual_rows": [
+        [
+          6,
+          "Helena",
+          "Holý",
+          49.62
+        ],
+        [
+          26,
+          "Richard",
+          "Cunningham",
+          47.62
+        ],
+        [
+          57,
+          "Luis",
+          "Rojas",
+          46.62
+        ],
+        [
+          45,
+          "Ladislav",
+          "Kovács",
+          45.62
+        ],
+        [
+          46,
+          "Hugh",
+          "O'Reilly",
+          45.62
+        ],
+        [
+          28,
+          "Julia",
+          "Barnett",
+          43.62
+        ],
+        [
+          24,
+          "Frank",
+          "Ralston",
+          43.62
+        ],
+        [
+          37,
+          "Fynn",
+          "Zimmermann",
+          43.62
+        ],
+        [
+          7,
+          "Astrid",
+          "Gruber",
+          42.62
+        ],
+        [
+          25,
+          "Victor",
+          "Stevens",
+          42.62
+        ],
+        [
+          44,
+          "Terhi",
+          "Hämäläinen",
+          41.62
+        ],
+        [
+          43,
+          "Isabelle",
+          "Mercier",
+          40.62
+        ],
+        [
+          48,
+          "Johannes",
+          "Van der Berg",
+          40.62
+        ],
+        [
+          5,
+          "František",
+          "Wichterlová",
+          40.62
+        ]
+      ],
+      "error": null,
       "refusal": null
     },
     {
       "id": "Q027",
       "question": "Show five tracks whose composer is not recorded.",
       "answerable": true,
-      "status": "ERROR",
-      "failure_category": "error",
-      "generated_sql": null,
-      "expected_columns": null,
-      "actual_columns": [],
-      "expected_rows": null,
-      "actual_rows": [],
-      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198190, Requested 2332. Please try again in 3m45.504s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT TrackId, Name FROM Track WHERE Composer IS NULL ORDER BY Name ASC, TrackId ASC LIMIT 5",
+      "expected_columns": [
+        "TrackId",
+        "Name"
+      ],
+      "actual_columns": [
+        "TrackId",
+        "Name"
+      ],
+      "expected_rows": [
+        [
+          2918,
+          "\"?\""
+        ],
+        [
+          3254,
+          "#9 Dream"
+        ],
+        [
+          3045,
+          "(I Can't Help) Falling In Love With You"
+        ],
+        [
+          2869,
+          "...And Found"
+        ],
+        [
+          2906,
+          "...In Translation"
+        ]
+      ],
+      "actual_rows": [
+        [
+          2918,
+          "\"?\""
+        ],
+        [
+          3254,
+          "#9 Dream"
+        ],
+        [
+          3045,
+          "(I Can't Help) Falling In Love With You"
+        ],
+        [
+          2869,
+          "...And Found"
+        ],
+        [
+          2906,
+          "...In Translation"
+        ]
+      ],
+      "error": null,
       "refusal": null
     },
     {
       "id": "Q028",
       "question": "How many invoices have a total greater than 10 dollars?",
       "answerable": true,
-      "status": "ERROR",
-      "failure_category": "error",
-      "generated_sql": null,
-      "expected_columns": null,
-      "actual_columns": [],
-      "expected_rows": null,
-      "actual_rows": [],
-      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198187, Requested 2331. Please try again in 3m43.775999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT COUNT(InvoiceId) AS invoice_count FROM Invoice WHERE Total > 10 LIMIT 100",
+      "expected_columns": [
+        "invoice_count"
+      ],
+      "actual_columns": [
+        "invoice_count"
+      ],
+      "expected_rows": [
+        [
+          64
+        ]
+      ],
+      "actual_rows": [
+        [
+          64
+        ]
+      ],
+      "error": null,
       "refusal": null
     },
     {
       "id": "Q029",
       "question": "Show the five customers with the most invoices, including their invoice counts.",
       "answerable": true,
-      "status": "ERROR",
-      "failure_category": "error",
-      "generated_sql": null,
-      "expected_columns": null,
-      "actual_columns": [],
-      "expected_rows": null,
-      "actual_rows": [],
-      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198185, Requested 2332. Please try again in 3m43.344s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName, COUNT(Invoice.InvoiceId) AS invoice_count FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY Customer.CustomerId, Customer.FirstName, Customer.LastName ORDER BY invoice_count DESC, Customer.CustomerId ASC LIMIT 5",
+      "expected_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "invoice_count"
+      ],
+      "actual_columns": [
+        "CustomerId",
+        "FirstName",
+        "LastName",
+        "invoice_count"
+      ],
+      "expected_rows": [
+        [
+          1,
+          "Luís",
+          "Gonçalves",
+          7
+        ],
+        [
+          2,
+          "Leonie",
+          "Köhler",
+          7
+        ],
+        [
+          3,
+          "François",
+          "Tremblay",
+          7
+        ],
+        [
+          4,
+          "Bjørn",
+          "Hansen",
+          7
+        ],
+        [
+          5,
+          "František",
+          "Wichterlová",
+          7
+        ]
+      ],
+      "actual_rows": [
+        [
+          1,
+          "Luís",
+          "Gonçalves",
+          7
+        ],
+        [
+          2,
+          "Leonie",
+          "Köhler",
+          7
+        ],
+        [
+          3,
+          "François",
+          "Tremblay",
+          7
+        ],
+        [
+          4,
+          "Bjørn",
+          "Hansen",
+          7
+        ],
+        [
+          5,
+          "František",
+          "Wichterlová",
+          7
+        ]
+      ],
+      "error": null,
       "refusal": null
     },
     {
       "id": "Q030",
       "question": "How much revenue has each media type generated from sold tracks?",
       "answerable": true,
-      "status": "ERROR",
-      "failure_category": "error",
-      "generated_sql": null,
-      "expected_columns": null,
-      "actual_columns": [],
-      "expected_rows": null,
-      "actual_rows": [],
-      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198182, Requested 2335. Please try again in 3m43.344s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT MediaType.Name AS media_type, ROUND(SUM(InvoiceLine.UnitPrice * InvoiceLine.Quantity), 2) AS revenue FROM MediaType JOIN Track ON MediaType.MediaTypeId = Track.MediaTypeId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId GROUP BY MediaType.MediaTypeId, MediaType.Name ORDER BY revenue DESC, media_type ASC LIMIT 100",
+      "expected_columns": [
+        "media_type",
+        "revenue"
+      ],
+      "actual_columns": [
+        "media_type",
+        "revenue"
+      ],
+      "expected_rows": [
+        [
+          "MPEG audio file",
+          1956.24
+        ],
+        [
+          "Protected MPEG-4 video file",
+          220.89
+        ],
+        [
+          "Protected AAC audio file",
+          144.54
+        ],
+        [
+          "Purchased AAC audio file",
+          3.96
+        ],
+        [
+          "AAC audio file",
+          2.97
+        ]
+      ],
+      "actual_rows": [
+        [
+          "MPEG audio file",
+          1956.24
+        ],
+        [
+          "Protected MPEG-4 video file",
+          220.89
+        ],
+        [
+          "Protected AAC audio file",
+          144.54
+        ],
+        [
+          "Purchased AAC audio file",
+          3.96
+        ],
+        [
+          "AAC audio file",
+          2.97
+        ]
+      ],
+      "error": null,
       "refusal": null
     },
     {
