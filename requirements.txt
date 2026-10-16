@@ -1,5 +1,6 @@
-langchain-groq
-sqlglot
-python-dotenv
-pytest
-streamlit
+﻿langchain-groq==1.1.3
+langchain-core==1.6.10
+sqlglot==30.22.0
+python-dotenv==1.2.4
+pytest==9.1.1
+streamlit==1.65.0
