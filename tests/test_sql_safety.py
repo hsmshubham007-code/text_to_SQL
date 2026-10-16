@@ -75,3 +75,24 @@ def test_rejects_missing_space_after_as():
             "SELECT COUNT(Invoice.InvoiceId) ASinvoice_count "
             "FROM Invoice"
         )
+
+def test_allows_asc_ordering_with_alias():
+    safe_sql = validate_sql(
+        "SELECT Name AS genre FROM Genre ORDER BY Name ASC"
+    )
+
+    assert "AS genre" in safe_sql
+    assert "ORDER BY Name ASC" in safe_sql
+
+
+def test_execute_sql_returns_complete_result():
+    result = execute_sql(
+        "SELECT COUNT(*) AS total FROM Track"
+    )
+
+    assert result == {
+        "columns": ["total"],
+        "rows": [[3503]],
+        "row_count": 1,
+        "sql": "SELECT COUNT(*) AS total FROM Track LIMIT 100",
+    }

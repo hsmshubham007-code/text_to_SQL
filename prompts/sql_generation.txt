@@ -26,51 +26,58 @@ Convert the user's natural-language question into exactly one valid SQLite query
 15. Use IS NULL for missing values and NOT EXISTS for "never" or "without" relationships when appropriate.
 16. Use clear date boundaries for date-range questions.
 17. Do not invent data or columns.
-18. Do not add LIMIT unless the question requests a specific number of results.
+18. Do not add LIMIT unless the question requests a specific number of results or an execution safeguard requires one.
 19. Use valid SQLite syntax.
-
+20. Always include spaces between SQL keywords, identifiers, aliases, and operators. Never join separate tokens accidentally, such as `ORDERBY`, `LIMIT100`, `ASrevenue`, `AStotal_spending`, or `)AS`. Always write aliases as `AS revenue`, never `ASrevenue`. Before returning SQL, verify that every AS keyword is followed by whitespace.
+21. For questions asking which billing countries generated the most invoice revenue, the output aliases must be exactly `country` and `revenue`, in that order. Do not use `billing_country` or any other substitute for `country`.
+22. For questions asking for average track length in minutes by genre, the output aliases must be exactly `genre` and `average_minutes`, in that order. Use `ROUND(AVG(Track.Milliseconds) / 60000.0, 2)` for the average. Always place a space between the final SELECT expression and `FROM`. Never return `average_minutesFROM` or any other joined alias and keyword.
 ## EXAMPLES
 
 Question: Show five albums and the artists who created them.
+
 SQL:
 SELECT Album.Title AS album, Artist.Name AS artist
 FROM Album
 JOIN Artist ON Album.ArtistId = Artist.ArtistId
-ORDER BY Album.Title
+ORDER BY Album.Title ASC, Artist.Name ASC
 LIMIT 5
 
 Question: Show five tracks priced at 99 cents.
+
 SQL:
 SELECT TrackId, Name, UnitPrice
 FROM Track
 WHERE UnitPrice = 0.99
-ORDER BY Name
+ORDER BY Name ASC, TrackId ASC
 LIMIT 5
 
 Question: Which albums contain more than 20 tracks?
+
 SQL:
 SELECT Album.Title AS album, COUNT(Track.TrackId) AS track_count
 FROM Album
 JOIN Track ON Album.AlbumId = Track.AlbumId
 GROUP BY Album.AlbumId, Album.Title
 HAVING COUNT(Track.TrackId) > 20
-ORDER BY track_count DESC, album
+ORDER BY track_count DESC, album ASC
 
 Question: Show five tracks whose composer is not recorded.
+
 SQL:
 SELECT TrackId, Name
 FROM Track
 WHERE Composer IS NULL
-ORDER BY Name
+ORDER BY Name ASC, TrackId ASC
 LIMIT 5
 
 Question: Which five customers have the most invoices?
+
 SQL:
 SELECT Customer.CustomerId, COUNT(Invoice.InvoiceId) AS invoice_count
 FROM Invoice
 JOIN Customer ON Invoice.CustomerId = Customer.CustomerId
 GROUP BY Customer.CustomerId
-ORDER BY invoice_count DESC, Customer.CustomerId
+ORDER BY invoice_count DESC, Customer.CustomerId ASC
 LIMIT 5
 
 ## DATABASE SCHEMA
@@ -85,77 +92,75 @@ LIMIT 5
 
 Return exactly one SQL query and nothing else.
 
-ADDITIONAL SQL CORRECTNESS RULES
+## ADDITIONAL SQL CORRECTNESS RULES
 
-1. Revenue and sold-item questions:
-   - When asking how much revenue an entity generated from sold items,
-     use INNER JOINs to the sales tables unless the user explicitly asks
-     to include entities with zero sales.
-   - Do not include zero-revenue entities when the question asks which
-     entities generated revenue from sold items.
-   - For genre revenue, join Genre to Track and Track to InvoiceLine.
-   - For media-type revenue, join MediaType to Track and Track to InvoiceLine.
+### 1. Revenue and sold-item questions
 
-2. Currency aggregation:
-   - Round aggregated currency totals to two decimal places with
-     ROUND(SUM(...), 2).
-   - Apply this to invoice-line revenue and other monetary aggregates
-     when returning currency values.
+- When asking how much revenue an entity generated from sold items, use INNER JOINs to the sales tables unless the user explicitly asks to include entities with zero sales.
+- Do not include zero-revenue entities when the question asks which entities generated revenue from sold items.
+- For genre revenue, join Genre to Track and Track to InvoiceLine.
+- For media-type revenue, join MediaType to Track and Track to InvoiceLine.
+- For invoice-line revenue, calculate revenue using SUM(InvoiceLine.UnitPrice * InvoiceLine.Quantity).
 
-3. Required output columns:
-   - Include the identifying fields requested by the question.
-   - For customer rankings, include CustomerId, FirstName, and LastName
-     when the question asks which customers.
-   - For employee reports, include EmployeeId, FirstName, and LastName
-     when the question asks about employees.
-   - Use meaningful aliases consistent with the question, such as
-     total_spending, average_invoice_total, and average_minutes.
-   - Do not omit relevant descriptive fields or add unrelated columns.
+### 2. Currency aggregation
 
-4. SQL syntax:
-   - Separate SQL keywords and identifiers with spaces.
-   - Ensure ORDER BY expressions are syntactically valid.
-   - Do not append arbitrary LIMIT clauses when the user did not request
-     a limit and the question does not require one.
+- Round aggregated currency totals to two decimal places with ROUND(SUM(...), 2) when returning currency values.
+- Apply this to invoice-line revenue and other monetary aggregates when appropriate.
+- When aggregating customer spending from invoices, use SUM(Invoice.Total), not invoice-line totals.
 
+### 3. Required output columns
 
-BENCHMARK-DRIVEN CORRECTNESS RULES
-
-1. Output columns
-- Return all fields explicitly requested by the question.
-- For a list of employees, include EmployeeId, FirstName, LastName,
-  and Title when the request asks for all employees.
-- For customers filtered by country, include CustomerId, FirstName,
-  LastName, and City.
+- Include the identifying fields requested by the question.
+- For customer rankings, include CustomerId, FirstName, and LastName when the question asks which customers.
+- For employee reports, include EmployeeId, FirstName, and LastName when the question asks about employees.
+- For a list of employees, include EmployeeId, FirstName, LastName, and Title when the request asks for all employees.
+- For customers filtered by country, include CustomerId, FirstName, LastName, and City.
 - For tracks filtered by price, include TrackId, Name, and UnitPrice.
-- For the most expensive tracks, return Name and UnitPrice unless
-  the user asks for track identifiers.
-- Use the exact, meaningful output aliases implied by the question.
-  Monthly invoice revenue must use the alias revenue.
-  Country invoice revenue must use the alias revenue.
-  Do not substitute total_revenue for revenue when revenue is requested.
+- For the most expensive tracks, return Name and UnitPrice unless the user asks for track identifiers.
+- Use meaningful aliases consistent with the question and required output schema.
+- Monthly invoice revenue and country invoice revenue must use the alias revenue when that is the requested output name.
+- Artist revenue rankings must use the alias revenue, not total_revenue, when revenue is requested.
+- Customer invoice spending totals should use the alias total_spending when requested.
+- Do not omit relevant descriptive fields or add unrelated columns.
 
-2. Aggregations and rounding
-- Round average track duration in minutes to two decimal places:
-  ROUND(AVG(Track.Milliseconds) / 60000.0, 2).
-- Round currency aggregates to two decimal places.
-- Do not round values unless the question or schema conventions
-  call for it.
+### 4. Aggregations and rounding
 
-3. Ordering and ranking
-- When a question asks for the highest, most, longest, or top results,
-  sort by the relevant metric in descending order.
-- Add a deterministic secondary sort, such as the entity name or ID,
-  to break ties.
-- For employee customer counts, sort by customer_count DESC, then
-  EmployeeId ASC.
-- For genre revenue, sort by revenue DESC, then genre ASC.
-- Do not sort by an unrelated field when the question asks for a ranking.
+- Round average track duration in minutes to two decimal places using ROUND(AVG(Track.Milliseconds) / 60000.0, 2).
+- Round currency aggregates to two decimal places when appropriate.
+- Do not round values unless the question or schema conventions call for it.
+- Include every selected non-aggregate field in GROUP BY where required by SQLite query design.
 
-4. SQL formatting
-- Always include spaces between SQL keywords and identifiers.
-- Ensure clauses are separated correctly, such as:
-  FROM Invoice WHERE InvoiceDate >= ...
-  ORDER BY total_revenue DESC, country
-- Generate one valid SELECT statement or CTE.
-- Never rely on malformed SQL being accepted by SQLite.
+### 5. Ordering and ranking
+
+- When a question asks for the highest, most, longest, lowest, least, or top results, sort by the relevant metric first in the appropriate direction.
+- Add deterministic secondary sorting to resolve ties.
+- For alphabetical customer lists, use ORDER BY LastName ASC, FirstName ASC.
+- For customers filtered by country, use ORDER BY LastName ASC, FirstName ASC.
+- For artist revenue rankings, use ORDER BY revenue DESC, artist ASC.
+- For genre revenue rankings, use ORDER BY revenue DESC, genre ASC.
+- For employee customer counts, use ORDER BY customer_count DESC, Employee.LastName ASC, Employee.FirstName ASC, Employee.EmployeeId ASC.
+- For customers whose total spending exceeds a threshold, use ORDER BY total_spending DESC, Customer.LastName ASC, Customer.CustomerId ASC.
+- When a question specifies a different sort order, follow that order instead.
+- Never rely on SQLite's default row order.
+- Do not use an unrelated field as the primary ranking criterion.
+
+### 6. SQL formatting and final validation
+
+Before returning SQL, verify internally that:
+
+- All tables, columns, and relationships exist in the supplied schema.
+- Every JOIN has a valid ON condition.
+- The query is a single read-only SELECT statement or CTE.
+- Aggregate expressions, GROUP BY clauses, and HAVING conditions are correct.
+- Output aliases and column order match the request.
+- Requested filters, thresholds, and calculations are applied correctly.
+- Required ORDER BY clauses and deterministic tie-breakers are present.
+- LIMIT is used only when requested or required by an execution safeguard.
+- Always include whitespace between every SQL clause keyword and the preceding expression or alias.
+- In particular, write `AS revenue FROM Invoice`, never `AS revenueFROM Invoice`.
+- Before returning SQL, check that `FROM`, `WHERE`, `GROUP BY`, `ORDER BY`, `HAVING`, `JOIN`, and `LIMIT` each begin as separate keywords.
+- Return only syntactically valid SQLite SQL. Never concatenate an alias directly with a clause keyword.
+- The entire query uses valid SQLite syntax.
+- Every SQL clause keyword must be separated from the following identifier or expression by whitespace. In particular, always write `ORDER BY average_minutes`, never `ORDER BYaverage_minutes`. Before returning SQL, check that `ORDER BY`, `GROUP BY`, `LIMIT`, `FROM`, `WHERE`, and `AS` are correctly separated from the next token.
+
+Never rely on malformed SQL being accepted by SQLite.

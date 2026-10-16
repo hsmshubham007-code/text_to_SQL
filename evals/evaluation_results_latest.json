@@ -1,12 +1,12 @@
 {
-  "timestamp_utc": "2026-10-14T12:04:14.534934+00:00",
+  "timestamp_utc": "2026-10-15T11:41:38.865311+00:00",
   "questions_evaluated": 35,
   "answerable": {
     "total": 30,
-    "passed": 3,
-    "incorrect_results": 27,
-    "errors": 0,
-    "accuracy": 0.1
+    "passed": 21,
+    "incorrect_results": 2,
+    "errors": 7,
+    "accuracy": 0.7
   },
   "unanswerable": {
     "total": 5,
@@ -15,18 +15,18 @@
     "refusal_support_implemented": true
   },
   "failure_counts": {
-    "incorrect_columns": 26,
-    "incorrect_result": 1
+    "incorrect_columns": 2,
+    "error": 7
   },
-  "elapsed_seconds": 865.71,
+  "elapsed_seconds": 391.27,
   "results": [
     {
       "id": "Q001",
       "question": "Show the first five customers alphabetically by last name.",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT CustomerId, FirstName, LastName, Email FROM Customer ORDER BY LastName ASC, FirstName ASC LIMIT 5",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT CustomerId, FirstName, LastName FROM Customer ORDER BY LastName ASC, FirstName ASC LIMIT 5",
       "expected_columns": [
         "CustomerId",
         "FirstName",
@@ -35,8 +35,7 @@
       "actual_columns": [
         "CustomerId",
         "FirstName",
-        "LastName",
-        "Email"
+        "LastName"
       ],
       "expected_rows": [
         [
@@ -69,32 +68,27 @@
         [
           12,
           "Roberto",
-          "Almeida",
-          "roberto.almeida@riotur.gov.br"
+          "Almeida"
         ],
         [
           28,
           "Julia",
-          "Barnett",
-          "jubarnett@gmail.com"
+          "Barnett"
         ],
         [
           39,
           "Camille",
-          "Bernard",
-          "camille.bernard@yahoo.fr"
+          "Bernard"
         ],
         [
           18,
           "Michelle",
-          "Brooks",
-          "michelleb@aol.com"
+          "Brooks"
         ],
         [
           29,
           "Robert",
-          "Brown",
-          "robbrown@shaw.ca"
+          "Brown"
         ]
       ],
       "error": null,
@@ -106,7 +100,7 @@
       "answerable": true,
       "status": "PASS",
       "failure_category": null,
-      "generated_sql": "SELECT COUNT(*) AS customer_count FROM Customer LIMIT 100",
+      "generated_sql": "SELECT COUNT(CustomerId) AS customer_count FROM Customer LIMIT 100",
       "expected_columns": [
         "customer_count"
       ],
@@ -132,7 +126,7 @@
       "answerable": true,
       "status": "PASS",
       "failure_category": null,
-      "generated_sql": "SELECT COUNT(*) AS track_count FROM Track LIMIT 100",
+      "generated_sql": "SELECT COUNT(TrackId) AS track_count FROM Track LIMIT 100",
       "expected_columns": [
         "track_count"
       ],
@@ -156,17 +150,16 @@
       "id": "Q004",
       "question": "Show five albums and the artists who created them.",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT a.AlbumId, a.Title AS AlbumTitle, ar.Name AS ArtistName FROM Album AS a JOIN Artist AS ar ON a.ArtistId = ar.ArtistId LIMIT 5",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Album.Title AS album, Artist.Name AS artist FROM Album JOIN Artist ON Album.ArtistId = Artist.ArtistId ORDER BY Album.Title ASC, Artist.Name ASC LIMIT 5",
       "expected_columns": [
         "album",
         "artist"
       ],
       "actual_columns": [
-        "AlbumId",
-        "AlbumTitle",
-        "ArtistName"
+        "album",
+        "artist"
       ],
       "expected_rows": [
         [
@@ -192,29 +185,24 @@
       ],
       "actual_rows": [
         [
-          1,
-          "For Those About To Rock We Salute You",
-          "AC/DC"
+          "...And Justice For All",
+          "Metallica"
         ],
         [
-          2,
-          "Balls to the Wall",
-          "Accept"
+          "20th Century Masters - The Millennium Collection: The Best of Scorpions",
+          "Scorpions"
         ],
         [
-          3,
-          "Restless and Wild",
-          "Accept"
+          "A Copland Celebration, Vol. I",
+          "Aaron Copland & London Symphony Orchestra"
         ],
         [
-          4,
-          "Let There Be Rock",
-          "AC/DC"
+          "A Matter of Life and Death",
+          "Iron Maiden"
         ],
         [
-          5,
-          "Big Ones",
-          "Aerosmith"
+          "A Real Dead One",
+          "Iron Maiden"
         ]
       ],
       "error": null,
@@ -224,9 +212,9 @@
       "id": "Q005",
       "question": "List all employees by last name.",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT LastName FROM Employee ORDER BY LastName LIMIT 100",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT EmployeeId, FirstName, LastName, Title FROM Employee ORDER BY LastName ASC, FirstName ASC, EmployeeId ASC LIMIT 100",
       "expected_columns": [
         "EmployeeId",
         "FirstName",
@@ -234,7 +222,10 @@
         "Title"
       ],
       "actual_columns": [
-        "LastName"
+        "EmployeeId",
+        "FirstName",
+        "LastName",
+        "Title"
       ],
       "expected_rows": [
         [
@@ -288,28 +279,52 @@
       ],
       "actual_rows": [
         [
-          "Adams"
+          1,
+          "Andrew",
+          "Adams",
+          "General Manager"
         ],
         [
-          "Callahan"
+          8,
+          "Laura",
+          "Callahan",
+          "IT Staff"
         ],
         [
-          "Edwards"
+          2,
+          "Nancy",
+          "Edwards",
+          "Sales Manager"
         ],
         [
-          "Johnson"
+          5,
+          "Steve",
+          "Johnson",
+          "Sales Support Agent"
         ],
         [
-          "King"
+          7,
+          "Robert",
+          "King",
+          "IT Staff"
         ],
         [
-          "Mitchell"
+          6,
+          "Michael",
+          "Mitchell",
+          "IT Manager"
         ],
         [
-          "Park"
+          4,
+          "Margaret",
+          "Park",
+          "Sales Support Agent"
         ],
         [
-          "Peacock"
+          3,
+          "Jane",
+          "Peacock",
+          "Sales Support Agent"
         ]
       ],
       "error": null,
@@ -319,9 +334,9 @@
       "id": "Q006",
       "question": "Which customers live in Canada?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT CustomerId, FirstName, LastName, Email, City, State, Country FROM Customer WHERE Country = 'Canada' ORDER BY CustomerId LIMIT 100",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT CustomerId, FirstName, LastName, City FROM Customer WHERE Country = 'Canada' ORDER BY LastName ASC, FirstName ASC LIMIT 100",
       "expected_columns": [
         "CustomerId",
         "FirstName",
@@ -332,10 +347,7 @@
         "CustomerId",
         "FirstName",
         "LastName",
-        "Email",
-        "City",
-        "State",
-        "Country"
+        "City"
       ],
       "expected_rows": [
         [
@@ -389,76 +401,52 @@
       ],
       "actual_rows": [
         [
-          3,
-          "François",
-          "Tremblay",
-          "ftremblay@gmail.com",
-          "Montréal",
-          "QC",
-          "Canada"
-        ],
-        [
-          14,
-          "Mark",
-          "Philips",
-          "mphilips12@shaw.ca",
-          "Edmonton",
-          "AB",
-          "Canada"
-        ],
-        [
-          15,
-          "Jennifer",
-          "Peterson",
-          "jenniferp@rogers.ca",
-          "Vancouver",
-          "BC",
-          "Canada"
-        ],
-        [
           29,
           "Robert",
           "Brown",
-          "robbrown@shaw.ca",
-          "Toronto",
-          "ON",
-          "Canada"
+          "Toronto"
         ],
         [
           30,
           "Edward",
           "Francis",
-          "edfrancis@yachoo.ca",
-          "Ottawa",
-          "ON",
-          "Canada"
-        ],
-        [
-          31,
-          "Martha",
-          "Silk",
-          "marthasilk@gmail.com",
-          "Halifax",
-          "NS",
-          "Canada"
+          "Ottawa"
         ],
         [
           32,
           "Aaron",
           "Mitchell",
-          "aaronmitchell@yahoo.ca",
-          "Winnipeg",
-          "MB",
-          "Canada"
+          "Winnipeg"
+        ],
+        [
+          15,
+          "Jennifer",
+          "Peterson",
+          "Vancouver"
+        ],
+        [
+          14,
+          "Mark",
+          "Philips",
+          "Edmonton"
+        ],
+        [
+          31,
+          "Martha",
+          "Silk",
+          "Halifax"
         ],
         [
           33,
           "Ellie",
           "Sullivan",
-          "ellie.sullivan@shaw.ca",
-          "Yellowknife",
-          "NT",
-          "Canada"
+          "Yellowknife"
+        ],
+        [
+          3,
+          "François",
+          "Tremblay",
+          "Montréal"
         ]
       ],
       "error": null,
@@ -468,9 +456,9 @@
       "id": "Q007",
       "question": "Show five tracks priced at 99 cents.",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT TrackId, Name, Milliseconds, GenreId, AlbumId, Composer, Bytes, UnitPrice FROM Track WHERE UnitPrice = 0.99 LIMIT 5",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT TrackId, Name, UnitPrice FROM Track WHERE UnitPrice = 0.99 ORDER BY Name ASC, TrackId ASC LIMIT 5",
       "expected_columns": [
         "TrackId",
         "Name",
@@ -479,11 +467,6 @@
       "actual_columns": [
         "TrackId",
         "Name",
-        "Milliseconds",
-        "GenreId",
-        "AlbumId",
-        "Composer",
-        "Bytes",
         "UnitPrice"
       ],
       "expected_rows": [
@@ -515,53 +498,28 @@
       ],
       "actual_rows": [
         [
-          1,
-          "For Those About To Rock (We Salute You)",
-          343719,
-          1,
-          1,
-          "Angus Young, Malcolm Young, Brian Johnson",
-          11170334,
+          3027,
+          "\"40\"",
           0.99
         ],
         [
-          2,
-          "Balls to the Wall",
-          342562,
-          1,
-          2,
-          "U. Dirkschneider, W. Hoffmann, H. Frank, P. Baltes, S. Kaufmann, G. Hoffmann",
-          5510424,
+          3412,
+          "\"Eine Kleine Nachtmusik\" Serenade In G, K. 525: I. Allegro",
           0.99
         ],
         [
-          3,
-          "Fast As a Shark",
-          230619,
-          1,
-          3,
-          "F. Baltes, S. Kaufman, U. Dirkscneider & W. Hoffman",
-          3990994,
+          109,
+          "#1 Zero",
           0.99
         ],
         [
-          4,
-          "Restless and Wild",
-          252051,
-          1,
-          3,
-          "F. Baltes, R.A. Smith-Diesel, S. Kaufman, U. Dirkscneider & W. Hoffman",
-          4331779,
+          3254,
+          "#9 Dream",
           0.99
         ],
         [
-          5,
-          "Princess of the Dawn",
-          375418,
-          1,
-          3,
-          "Deaffy & R.A. Smith-Diesel",
-          6290521,
+          602,
+          "'Round Midnight",
           0.99
         ]
       ],
@@ -572,19 +530,25 @@
       "id": "Q008",
       "question": "How many invoices were issued in 2012?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": null,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT COUNT(Invoice.InvoiceId) AS invoice_count FROM Invoice WHERE Invoice.InvoiceDate >= '2012-01-01' AND Invoice.InvoiceDate < '2013-01-01' LIMIT 100",
       "expected_columns": [
         "invoice_count"
       ],
-      "actual_columns": [],
+      "actual_columns": [
+        "invoice_count"
+      ],
       "expected_rows": [
         [
           0
         ]
       ],
-      "actual_rows": [],
+      "actual_rows": [
+        [
+          0
+        ]
+      ],
       "error": null,
       "refusal": null
     },
@@ -592,9 +556,9 @@
       "id": "Q009",
       "question": "Which five customers have the highest total invoice spending?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT c.FirstName, c.LastName, SUM(i.Total) AS TotalSpent FROM Customer AS c JOIN Invoice AS i ON c.CustomerId = i.CustomerId GROUP BY c.CustomerId, c.FirstName, c.LastName ORDER BY TotalSpent DESC LIMIT 5",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName, ROUND(SUM(Invoice.Total), 2) AS total_spending FROM Customer JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY Customer.CustomerId, Customer.FirstName, Customer.LastName ORDER BY total_spending DESC, Customer.LastName ASC, Customer.CustomerId ASC LIMIT 5",
       "expected_columns": [
         "CustomerId",
         "FirstName",
@@ -602,9 +566,10 @@
         "total_spending"
       ],
       "actual_columns": [
+        "CustomerId",
         "FirstName",
         "LastName",
-        "TotalSpent"
+        "total_spending"
       ],
       "expected_rows": [
         [
@@ -640,26 +605,31 @@
       ],
       "actual_rows": [
         [
+          6,
           "Helena",
           "Holý",
           49.62
         ],
         [
+          26,
           "Richard",
           "Cunningham",
           47.62
         ],
         [
+          57,
           "Luis",
           "Rojas",
           46.62
         ],
         [
+          45,
           "Ladislav",
           "Kovács",
           45.62
         ],
         [
+          46,
           "Hugh",
           "O'Reilly",
           45.62
@@ -672,14 +642,17 @@
       "id": "Q010",
       "question": "What was the total invoice revenue for each month of 2013?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": null,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT STRFTIME('%Y-%m', Invoice.InvoiceDate) AS month, ROUND(SUM(Invoice.Total), 2) AS revenue FROM Invoice WHERE Invoice.InvoiceDate >= '2013-01-01' AND Invoice.InvoiceDate < '2014-01-01' GROUP BY STRFTIME('%Y-%m', Invoice.InvoiceDate) ORDER BY month ASC LIMIT 100",
       "expected_columns": [
         "month",
         "revenue"
       ],
-      "actual_columns": [],
+      "actual_columns": [
+        "month",
+        "revenue"
+      ],
       "expected_rows": [],
       "actual_rows": [],
       "error": null,
@@ -691,14 +664,14 @@
       "answerable": true,
       "status": "FAIL",
       "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT i.BillingCountry, SUM(i.Total) AS TotalRevenue FROM Invoice AS i GROUP BY i.BillingCountry ORDER BY TotalRevenue DESC LIMIT 5",
+      "generated_sql": "SELECT Invoice.BillingCountry AS billing_country, ROUND(SUM(Invoice.Total), 2) AS revenue FROM Invoice GROUP BY Invoice.BillingCountry ORDER BY revenue DESC, billing_country ASC LIMIT 5",
       "expected_columns": [
         "country",
         "revenue"
       ],
       "actual_columns": [
-        "BillingCountry",
-        "TotalRevenue"
+        "billing_country",
+        "revenue"
       ],
       "expected_rows": [
         [
@@ -751,14 +724,17 @@
       "id": "Q012",
       "question": "Which five music genres have the most tracks?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT g.GenreName, COUNT(t.TrackId) AS TrackCount\nFROM Genre g\nJOIN Track t ON g.GenreId = t.GenreId\nGROUP BY g.GenreId, g.GenreName\nORDER BY TrackCount DESC\nLIMIT 5;",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Genre.Name AS genre, COUNT(Track.TrackId) AS track_count FROM Genre JOIN Track ON Genre.GenreId = Track.GenreId GROUP BY Genre.GenreId, Genre.Name ORDER BY track_count DESC, genre ASC LIMIT 5",
       "expected_columns": [
         "genre",
         "track_count"
       ],
-      "actual_columns": [],
+      "actual_columns": [
+        "genre",
+        "track_count"
+      ],
       "expected_rows": [
         [
           "Rock",
@@ -781,7 +757,28 @@
           130
         ]
       ],
-      "actual_rows": [],
+      "actual_rows": [
+        [
+          "Rock",
+          1297
+        ],
+        [
+          "Latin",
+          579
+        ],
+        [
+          "Metal",
+          374
+        ],
+        [
+          "Alternative & Punk",
+          332
+        ],
+        [
+          "Jazz",
+          130
+        ]
+      ],
       "error": null,
       "refusal": null
     },
@@ -789,16 +786,16 @@
       "id": "Q013",
       "question": "Which five artists have the most albums?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT ar.Name, COUNT(al.AlbumId) AS AlbumCount FROM Artist AS ar JOIN Album AS al ON ar.ArtistId = al.ArtistId GROUP BY ar.ArtistId, ar.Name ORDER BY AlbumCount DESC, ar.Name ASC LIMIT 5",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Artist.Name AS artist, COUNT(Album.AlbumId) AS album_count FROM Artist JOIN Album ON Artist.ArtistId = Album.ArtistId GROUP BY Artist.ArtistId, Artist.Name ORDER BY album_count DESC, artist ASC LIMIT 5",
       "expected_columns": [
         "artist",
         "album_count"
       ],
       "actual_columns": [
-        "Name",
-        "AlbumCount"
+        "artist",
+        "album_count"
       ],
       "expected_rows": [
         [
@@ -853,14 +850,14 @@
       "answerable": true,
       "status": "FAIL",
       "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT g.Name AS Genre, ROUND(AVG(t.Milliseconds) / 1000.0 / 60.0, 2) AS AvgMinutes FROM Track AS t JOIN Genre AS g ON g.GenreId = t.GenreId GROUP BY g.GenreId, g.Name ORDER BY AvgMinutes DESC LIMIT 5",
+      "generated_sql": "SELECT Genre.Name AS genre, ROUND(AVG(Track.Milliseconds) / 60000.0, 2) AS avg_track_length_minutes FROM Genre JOIN Track ON Genre.GenreId = Track.GenreId GROUP BY Genre.GenreId, Genre.Name ORDER BY avg_track_length_minutes DESC, genre ASC LIMIT 5",
       "expected_columns": [
         "genre",
         "average_minutes"
       ],
       "actual_columns": [
-        "Genre",
-        "AvgMinutes"
+        "genre",
+        "avg_track_length_minutes"
       ],
       "expected_rows": [
         [
@@ -913,16 +910,16 @@
       "id": "Q015",
       "question": "Which five artists generated the most revenue from sold tracks?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT a.Name AS Artist, SUM(il.UnitPrice * il.Quantity) AS Revenue FROM InvoiceLine AS il JOIN Track AS t ON il.TrackId = t.TrackId JOIN Album AS al ON t.AlbumId = al.AlbumId JOIN Artist AS a ON al.ArtistId = a.ArtistId GROUP BY a.ArtistId, a.Name ORDER BY Revenue DESC LIMIT 5",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Artist.Name AS artist, ROUND(SUM(InvoiceLine.UnitPrice * InvoiceLine.Quantity), 2) AS revenue FROM Artist JOIN Album ON Artist.ArtistId = Album.ArtistId JOIN Track ON Album.AlbumId = Track.AlbumId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId GROUP BY Artist.ArtistId, Artist.Name ORDER BY revenue DESC, artist ASC LIMIT 5",
       "expected_columns": [
         "artist",
         "revenue"
       ],
       "actual_columns": [
-        "Artist",
-        "Revenue"
+        "artist",
+        "revenue"
       ],
       "expected_rows": [
         [
@@ -953,7 +950,7 @@
         ],
         [
           "U2",
-          105.92999999999999
+          105.93
         ],
         [
           "Metallica",
@@ -975,18 +972,16 @@
       "id": "Q016",
       "question": "Show five tracks that have never appeared on an invoice.",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT t.TrackId, t.Name, a.Title AS Album, ar.Name AS Artist FROM Track AS t LEFT JOIN Album AS a ON t.AlbumId = a.AlbumId LEFT JOIN Artist AS ar ON a.ArtistId = ar.ArtistId WHERE NOT t.TrackId IN (SELECT DISTINCT TrackId FROM InvoiceLine) LIMIT 5",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Track.TrackId, Track.Name FROM Track WHERE NOT EXISTS(SELECT 1 FROM InvoiceLine WHERE InvoiceLine.TrackId = Track.TrackId) ORDER BY Track.Name ASC, Track.TrackId ASC LIMIT 5",
       "expected_columns": [
         "TrackId",
         "Name"
       ],
       "actual_columns": [
         "TrackId",
-        "Name",
-        "Album",
-        "Artist"
+        "Name"
       ],
       "expected_rows": [
         [
@@ -1012,34 +1007,24 @@
       ],
       "actual_rows": [
         [
-          7,
-          "Let's Get It Up",
-          "For Those About To Rock We Salute You",
-          "AC/DC"
+          3027,
+          "\"40\""
         ],
         [
-          11,
-          "C.O.D.",
-          "For Those About To Rock We Salute You",
-          "AC/DC"
+          3412,
+          "\"Eine Kleine Nachtmusik\" Serenade In G, K. 525: I. Allegro"
         ],
         [
-          17,
-          "Let There Be Rock",
-          "Let There Be Rock",
-          "AC/DC"
+          109,
+          "#1 Zero"
         ],
         [
-          18,
-          "Bad Boy Boogie",
-          "Let There Be Rock",
-          "AC/DC"
+          570,
+          "(Da Le) Yaleo"
         ],
         [
-          22,
-          "Whole Lotta Rosie",
-          "Let There Be Rock",
-          "AC/DC"
+          3045,
+          "(I Can't Help) Falling In Love With You"
         ]
       ],
       "error": null,
@@ -1049,23 +1034,21 @@
       "id": "Q017",
       "question": "Which customers have never received an invoice?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT COUNT(DISTINCT CustomerId) AS customers_with_invoices FROM Invoice LIMIT 100",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Customer.CustomerId, Customer.FirstName, Customer.LastName FROM Customer WHERE NOT EXISTS(SELECT 1 FROM Invoice WHERE Invoice.CustomerId = Customer.CustomerId) ORDER BY Customer.LastName ASC, Customer.FirstName ASC, Customer.CustomerId ASC LIMIT 100",
       "expected_columns": [
         "CustomerId",
         "FirstName",
         "LastName"
       ],
       "actual_columns": [
-        "customers_with_invoices"
+        "CustomerId",
+        "FirstName",
+        "LastName"
       ],
       "expected_rows": [],
-      "actual_rows": [
-        [
-          59
-        ]
-      ],
+      "actual_rows": [],
       "error": null,
       "refusal": null
     },
@@ -1073,17 +1056,16 @@
       "id": "Q018",
       "question": "Which five tracks have sold the most units?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT t.Name AS Track, a.Name AS Artist, SUM(il.Quantity) AS UnitsSold FROM InvoiceLine AS il JOIN Track AS t ON il.TrackId = t.TrackId JOIN Album AS al ON t.AlbumId = al.AlbumId JOIN Artist AS a ON al.ArtistId = a.ArtistId GROUP BY t.TrackId, t.Name, a.Name ORDER BY UnitsSold DESC LIMIT 5",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Track.Name AS track, SUM(InvoiceLine.Quantity) AS units_sold FROM Track JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId GROUP BY Track.TrackId, Track.Name ORDER BY units_sold DESC, Track.Name ASC LIMIT 5",
       "expected_columns": [
         "track",
         "units_sold"
       ],
       "actual_columns": [
-        "Track",
-        "Artist",
-        "UnitsSold"
+        "track",
+        "units_sold"
       ],
       "expected_rows": [
         [
@@ -1109,28 +1091,23 @@
       ],
       "actual_rows": [
         [
-          "Balls to the Wall",
-          "Accept",
+          "A Cor Do Sol",
           2
         ],
         [
-          "Inject The Venom",
-          "AC/DC",
+          "A Melhor Forma",
           2
         ],
         [
-          "Snowballed",
-          "AC/DC",
+          "A Novidade (Live)",
           2
         ],
         [
-          "Overdose",
-          "AC/DC",
+          "Abraham, Martin And John",
           2
         ],
         [
-          "Deuces Are Wild",
-          "Aerosmith",
+          "Aces High",
           2
         ]
       ],
@@ -1141,16 +1118,16 @@
       "id": "Q019",
       "question": "How much line-item revenue has each genre generated?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT g.Name AS Genre, ROUND(SUM(il.UnitPrice * il.Quantity), 2) AS Revenue FROM InvoiceLine AS il JOIN Track AS t ON t.TrackId = il.TrackId JOIN Genre AS g ON g.GenreId = t.GenreId GROUP BY g.GenreId, g.Name ORDER BY Revenue DESC LIMIT 100",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Genre.Name AS genre, ROUND(SUM(InvoiceLine.UnitPrice * InvoiceLine.Quantity), 2) AS revenue FROM Genre JOIN Track ON Genre.GenreId = Track.GenreId JOIN InvoiceLine ON Track.TrackId = InvoiceLine.TrackId GROUP BY Genre.GenreId, Genre.Name ORDER BY revenue DESC, genre ASC LIMIT 100",
       "expected_columns": [
         "genre",
         "revenue"
       ],
       "actual_columns": [
-        "Genre",
-        "Revenue"
+        "genre",
+        "revenue"
       ],
       "expected_rows": [
         [
@@ -1284,11 +1261,11 @@
           57.71
         ],
         [
-          "R&B/Soul",
+          "Classical",
           40.59
         ],
         [
-          "Classical",
+          "R&B/Soul",
           40.59
         ],
         [
@@ -1332,11 +1309,11 @@
           11.94
         ],
         [
-          "Heavy Metal",
+          "Electronica/Dance",
           11.88
         ],
         [
-          "Electronica/Dance",
+          "Heavy Metal",
           11.88
         ],
         [
@@ -1355,16 +1332,21 @@
       "id": "Q020",
       "question": "How many customers does each employee support?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": null,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Employee.EmployeeId, Employee.FirstName, Employee.LastName, COUNT(Customer.CustomerId) AS customer_count FROM Employee LEFT JOIN Customer ON Employee.EmployeeId = Customer.SupportRepId GROUP BY Employee.EmployeeId, Employee.FirstName, Employee.LastName ORDER BY customer_count DESC, Employee.LastName ASC, Employee.FirstName ASC, Employee.EmployeeId ASC LIMIT 100",
       "expected_columns": [
         "EmployeeId",
         "FirstName",
         "LastName",
         "customer_count"
       ],
-      "actual_columns": [],
+      "actual_columns": [
+        "EmployeeId",
+        "FirstName",
+        "LastName",
+        "customer_count"
+      ],
       "expected_rows": [
         [
           3,
@@ -1415,7 +1397,56 @@
           0
         ]
       ],
-      "actual_rows": [],
+      "actual_rows": [
+        [
+          3,
+          "Jane",
+          "Peacock",
+          21
+        ],
+        [
+          4,
+          "Margaret",
+          "Park",
+          20
+        ],
+        [
+          5,
+          "Steve",
+          "Johnson",
+          18
+        ],
+        [
+          1,
+          "Andrew",
+          "Adams",
+          0
+        ],
+        [
+          8,
+          "Laura",
+          "Callahan",
+          0
+        ],
+        [
+          2,
+          "Nancy",
+          "Edwards",
+          0
+        ],
+        [
+          7,
+          "Robert",
+          "King",
+          0
+        ],
+        [
+          6,
+          "Michael",
+          "Mitchell",
+          0
+        ]
+      ],
       "error": null,
       "refusal": null
     },
@@ -1423,14 +1454,17 @@
       "id": "Q021",
       "question": "How many invoices were issued in each year?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": null,
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT STRFTIME('%Y', Invoice.InvoiceDate) AS year, COUNT(Invoice.InvoiceId) AS invoice_count FROM Invoice GROUP BY STRFTIME('%Y', Invoice.InvoiceDate) ORDER BY year ASC LIMIT 100",
       "expected_columns": [
         "year",
         "invoice_count"
       ],
-      "actual_columns": [],
+      "actual_columns": [
+        "year",
+        "invoice_count"
+      ],
       "expected_rows": [
         [
           "2021",
@@ -1453,7 +1487,28 @@
           80
         ]
       ],
-      "actual_rows": [],
+      "actual_rows": [
+        [
+          "2021",
+          83
+        ],
+        [
+          "2022",
+          83
+        ],
+        [
+          "2023",
+          83
+        ],
+        [
+          "2024",
+          83
+        ],
+        [
+          "2025",
+          80
+        ]
+      ],
       "error": null,
       "refusal": null
     },
@@ -1461,9 +1516,9 @@
       "id": "Q022",
       "question": "What is the average invoice total?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_result",
-      "generated_sql": "SELECT AVG(Total) AS average_invoice_total FROM Invoice LIMIT 100",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT ROUND(AVG(Invoice.Total), 2) AS average_invoice_total FROM Invoice LIMIT 100",
       "expected_columns": [
         "average_invoice_total"
       ],
@@ -1477,7 +1532,7 @@
       ],
       "actual_rows": [
         [
-          5.651941747572815
+          5.65
         ]
       ],
       "error": null,
@@ -1487,16 +1542,15 @@
       "id": "Q023",
       "question": "Show the five most expensive tracks.",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT Name, Milliseconds, UnitPrice FROM Track ORDER BY UnitPrice DESC LIMIT 5",
+      "status": "PASS",
+      "failure_category": null,
+      "generated_sql": "SELECT Name, UnitPrice FROM Track ORDER BY UnitPrice DESC, Name ASC LIMIT 5",
       "expected_columns": [
         "Name",
         "UnitPrice"
       ],
       "actual_columns": [
         "Name",
-        "Milliseconds",
         "UnitPrice"
       ],
       "expected_rows": [
@@ -1523,28 +1577,23 @@
       ],
       "actual_rows": [
         [
-          "Battlestar Galactica: The Story So Far",
-          2622250,
+          "\"?\"",
           1.99
         ],
         [
-          "Occupation / Precipice",
-          5286953,
+          "...And Found",
           1.99
         ],
         [
-          "Exodus, Pt. 1",
-          2621708,
+          "...In Translation",
           1.99
         ],
         [
-          "Exodus, Pt. 2",
-          2618000,
+          ".07%",
           1.99
         ],
         [
-          "Collaborators",
-          2626626,
+          "A Benihana Christmas, Pts. 1 & 2",
           1.99
         ]
       ],
@@ -1555,674 +1604,98 @@
       "id": "Q024",
       "question": "Which five playlists contain the most tracks?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT p.Name, COUNT(pt.TrackId) AS TrackCount FROM Playlist AS p JOIN PlaylistTrack AS pt ON p.PlaylistId = pt.PlaylistId GROUP BY p.PlaylistId, p.Name ORDER BY TrackCount DESC LIMIT 5",
-      "expected_columns": [
-        "playlist",
-        "track_count"
-      ],
-      "actual_columns": [
-        "Name",
-        "TrackCount"
-      ],
-      "expected_rows": [
-        [
-          "Music",
-          3290
-        ],
-        [
-          "Music",
-          3290
-        ],
-        [
-          "90’s Music",
-          1477
-        ],
-        [
-          "TV Shows",
-          213
-        ],
-        [
-          "TV Shows",
-          213
-        ]
-      ],
-      "actual_rows": [
-        [
-          "Music",
-          3290
-        ],
-        [
-          "Music",
-          3290
-        ],
-        [
-          "90’s Music",
-          1477
-        ],
-        [
-          "TV Shows",
-          213
-        ],
-        [
-          "TV Shows",
-          213
-        ]
-      ],
-      "error": null,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198197, Requested 2326. Please try again in 3m45.936s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
       "refusal": null
     },
     {
       "id": "Q025",
       "question": "Which albums contain more than 20 tracks?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT a.AlbumId, a.Title, COUNT(t.TrackId) AS TrackCount FROM Album AS a JOIN Track AS t ON a.AlbumId = t.AlbumId GROUP BY a.AlbumId, a.Title HAVING COUNT(t.TrackId) > 20 ORDER BY TrackCount DESC, a.Title LIMIT 100",
-      "expected_columns": [
-        "album",
-        "track_count"
-      ],
-      "actual_columns": [
-        "AlbumId",
-        "Title",
-        "TrackCount"
-      ],
-      "expected_rows": [
-        [
-          "Greatest Hits",
-          57
-        ],
-        [
-          "Minha Historia",
-          34
-        ],
-        [
-          "Unplugged",
-          30
-        ],
-        [
-          "Lost, Season 3",
-          26
-        ],
-        [
-          "Lost, Season 1",
-          25
-        ],
-        [
-          "The Office, Season 3",
-          25
-        ],
-        [
-          "Battlestar Galactica (Classic), Season 1",
-          24
-        ],
-        [
-          "Lost, Season 2",
-          24
-        ],
-        [
-          "My Way: The Best Of Frank Sinatra [Disc 1]",
-          24
-        ],
-        [
-          "Afrociberdelia",
-          23
-        ],
-        [
-          "Heroes, Season 1",
-          23
-        ],
-        [
-          "Instant Karma: The Amnesty International Campaign to Save Darfur",
-          23
-        ],
-        [
-          "Acústico",
-          22
-        ],
-        [
-          "The Office, Season 2",
-          22
-        ],
-        [
-          "Up An' Atom",
-          22
-        ],
-        [
-          "Acústico MTV",
-          21
-        ],
-        [
-          "International Superhits",
-          21
-        ]
-      ],
-      "actual_rows": [
-        [
-          141,
-          "Greatest Hits",
-          57
-        ],
-        [
-          23,
-          "Minha Historia",
-          34
-        ],
-        [
-          73,
-          "Unplugged",
-          30
-        ],
-        [
-          229,
-          "Lost, Season 3",
-          26
-        ],
-        [
-          230,
-          "Lost, Season 1",
-          25
-        ],
-        [
-          251,
-          "The Office, Season 3",
-          25
-        ],
-        [
-          253,
-          "Battlestar Galactica (Classic), Season 1",
-          24
-        ],
-        [
-          231,
-          "Lost, Season 2",
-          24
-        ],
-        [
-          83,
-          "My Way: The Best Of Frank Sinatra [Disc 1]",
-          24
-        ],
-        [
-          24,
-          "Afrociberdelia",
-          23
-        ],
-        [
-          228,
-          "Heroes, Season 1",
-          23
-        ],
-        [
-          255,
-          "Instant Karma: The Amnesty International Campaign to Save Darfur",
-          23
-        ],
-        [
-          224,
-          "Acústico",
-          22
-        ],
-        [
-          250,
-          "The Office, Season 2",
-          22
-        ],
-        [
-          51,
-          "Up An' Atom",
-          22
-        ],
-        [
-          167,
-          "Acústico MTV",
-          21
-        ],
-        [
-          39,
-          "International Superhits",
-          21
-        ]
-      ],
-      "error": null,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198195, Requested 2328. Please try again in 3m45.936s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
       "refusal": null
     },
     {
       "id": "Q026",
       "question": "Which customers have spent more than 40 dollars in total invoice amounts?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT c.CustomerId, c.FirstName, c.LastName, SUM(i.Total) AS TotalSpent FROM Customer AS c JOIN Invoice AS i ON c.CustomerId = i.CustomerId GROUP BY c.CustomerId, c.FirstName, c.LastName HAVING SUM(i.Total) > 40 ORDER BY TotalSpent DESC LIMIT 100",
-      "expected_columns": [
-        "CustomerId",
-        "FirstName",
-        "LastName",
-        "total_spending"
-      ],
-      "actual_columns": [
-        "CustomerId",
-        "FirstName",
-        "LastName",
-        "TotalSpent"
-      ],
-      "expected_rows": [
-        [
-          6,
-          "Helena",
-          "Holý",
-          49.62
-        ],
-        [
-          26,
-          "Richard",
-          "Cunningham",
-          47.62
-        ],
-        [
-          57,
-          "Luis",
-          "Rojas",
-          46.62
-        ],
-        [
-          45,
-          "Ladislav",
-          "Kovács",
-          45.62
-        ],
-        [
-          46,
-          "Hugh",
-          "O'Reilly",
-          45.62
-        ],
-        [
-          28,
-          "Julia",
-          "Barnett",
-          43.62
-        ],
-        [
-          24,
-          "Frank",
-          "Ralston",
-          43.62
-        ],
-        [
-          37,
-          "Fynn",
-          "Zimmermann",
-          43.62
-        ],
-        [
-          7,
-          "Astrid",
-          "Gruber",
-          42.62
-        ],
-        [
-          25,
-          "Victor",
-          "Stevens",
-          42.62
-        ],
-        [
-          44,
-          "Terhi",
-          "Hämäläinen",
-          41.62
-        ],
-        [
-          43,
-          "Isabelle",
-          "Mercier",
-          40.62
-        ],
-        [
-          48,
-          "Johannes",
-          "Van der Berg",
-          40.62
-        ],
-        [
-          5,
-          "František",
-          "Wichterlová",
-          40.62
-        ]
-      ],
-      "actual_rows": [
-        [
-          6,
-          "Helena",
-          "Holý",
-          49.62
-        ],
-        [
-          26,
-          "Richard",
-          "Cunningham",
-          47.62
-        ],
-        [
-          57,
-          "Luis",
-          "Rojas",
-          46.62
-        ],
-        [
-          45,
-          "Ladislav",
-          "Kovács",
-          45.62
-        ],
-        [
-          46,
-          "Hugh",
-          "O'Reilly",
-          45.62
-        ],
-        [
-          24,
-          "Frank",
-          "Ralston",
-          43.62
-        ],
-        [
-          28,
-          "Julia",
-          "Barnett",
-          43.62
-        ],
-        [
-          37,
-          "Fynn",
-          "Zimmermann",
-          43.62
-        ],
-        [
-          7,
-          "Astrid",
-          "Gruber",
-          42.62
-        ],
-        [
-          25,
-          "Victor",
-          "Stevens",
-          42.62
-        ],
-        [
-          44,
-          "Terhi",
-          "Hämäläinen",
-          41.62
-        ],
-        [
-          5,
-          "František",
-          "Wichterlová",
-          40.62
-        ],
-        [
-          43,
-          "Isabelle",
-          "Mercier",
-          40.62
-        ],
-        [
-          48,
-          "Johannes",
-          "Van der Berg",
-          40.62
-        ]
-      ],
-      "error": null,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198192, Requested 2333. Please try again in 3m46.8s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
       "refusal": null
     },
     {
       "id": "Q027",
       "question": "Show five tracks whose composer is not recorded.",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT TrackId, Name, Composer FROM Track WHERE Composer IS NULL LIMIT 5",
-      "expected_columns": [
-        "TrackId",
-        "Name"
-      ],
-      "actual_columns": [
-        "TrackId",
-        "Name",
-        "Composer"
-      ],
-      "expected_rows": [
-        [
-          2918,
-          "\"?\""
-        ],
-        [
-          3254,
-          "#9 Dream"
-        ],
-        [
-          3045,
-          "(I Can't Help) Falling In Love With You"
-        ],
-        [
-          2869,
-          "...And Found"
-        ],
-        [
-          2906,
-          "...In Translation"
-        ]
-      ],
-      "actual_rows": [
-        [
-          63,
-          "Desafinado",
-          null
-        ],
-        [
-          64,
-          "Garota De Ipanema",
-          null
-        ],
-        [
-          65,
-          "Samba De Uma Nota Só (One Note Samba)",
-          null
-        ],
-        [
-          66,
-          "Por Causa De Você",
-          null
-        ],
-        [
-          67,
-          "Ligia",
-          null
-        ]
-      ],
-      "error": null,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198190, Requested 2332. Please try again in 3m45.504s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
       "refusal": null
     },
     {
       "id": "Q028",
       "question": "How many invoices have a total greater than 10 dollars?",
       "answerable": true,
-      "status": "PASS",
-      "failure_category": null,
-      "generated_sql": "SELECT COUNT(*) AS invoice_count FROM Invoice WHERE Total > 10 LIMIT 100",
-      "expected_columns": [
-        "invoice_count"
-      ],
-      "actual_columns": [
-        "invoice_count"
-      ],
-      "expected_rows": [
-        [
-          64
-        ]
-      ],
-      "actual_rows": [
-        [
-          64
-        ]
-      ],
-      "error": null,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198187, Requested 2331. Please try again in 3m43.775999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
       "refusal": null
     },
     {
       "id": "Q029",
       "question": "Show the five customers with the most invoices, including their invoice counts.",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT c.CustomerId, c.FirstName, c.LastName, COUNT(i.InvoiceId) AS InvoiceCount FROM Customer AS c JOIN Invoice AS i ON c.CustomerId = i.CustomerId GROUP BY c.CustomerId, c.FirstName, c.LastName ORDER BY InvoiceCount DESC LIMIT 5",
-      "expected_columns": [
-        "CustomerId",
-        "FirstName",
-        "LastName",
-        "invoice_count"
-      ],
-      "actual_columns": [
-        "CustomerId",
-        "FirstName",
-        "LastName",
-        "InvoiceCount"
-      ],
-      "expected_rows": [
-        [
-          1,
-          "Luís",
-          "Gonçalves",
-          7
-        ],
-        [
-          2,
-          "Leonie",
-          "Köhler",
-          7
-        ],
-        [
-          3,
-          "François",
-          "Tremblay",
-          7
-        ],
-        [
-          4,
-          "Bjørn",
-          "Hansen",
-          7
-        ],
-        [
-          5,
-          "František",
-          "Wichterlová",
-          7
-        ]
-      ],
-      "actual_rows": [
-        [
-          1,
-          "Luís",
-          "Gonçalves",
-          7
-        ],
-        [
-          2,
-          "Leonie",
-          "Köhler",
-          7
-        ],
-        [
-          3,
-          "François",
-          "Tremblay",
-          7
-        ],
-        [
-          4,
-          "Bjørn",
-          "Hansen",
-          7
-        ],
-        [
-          5,
-          "František",
-          "Wichterlová",
-          7
-        ]
-      ],
-      "error": null,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198185, Requested 2332. Please try again in 3m43.344s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
       "refusal": null
     },
     {
       "id": "Q030",
       "question": "How much revenue has each media type generated from sold tracks?",
       "answerable": true,
-      "status": "FAIL",
-      "failure_category": "incorrect_columns",
-      "generated_sql": "SELECT mt.Name AS MediaType, SUM(il.UnitPrice * il.Quantity) AS Revenue FROM InvoiceLine AS il JOIN Track AS t ON t.TrackId = il.TrackId JOIN MediaType AS mt ON mt.MediaTypeId = t.MediaTypeId GROUP BY mt.Name ORDER BY Revenue DESC LIMIT 100",
-      "expected_columns": [
-        "media_type",
-        "revenue"
-      ],
-      "actual_columns": [
-        "MediaType",
-        "Revenue"
-      ],
-      "expected_rows": [
-        [
-          "MPEG audio file",
-          1956.24
-        ],
-        [
-          "Protected MPEG-4 video file",
-          220.89
-        ],
-        [
-          "Protected AAC audio file",
-          144.54
-        ],
-        [
-          "Purchased AAC audio file",
-          3.96
-        ],
-        [
-          "AAC audio file",
-          2.97
-        ]
-      ],
-      "actual_rows": [
-        [
-          "MPEG audio file",
-          1956.24
-        ],
-        [
-          "Protected MPEG-4 video file",
-          220.89
-        ],
-        [
-          "Protected AAC audio file",
-          144.54
-        ],
-        [
-          "Purchased AAC audio file",
-          3.96
-        ],
-        [
-          "AAC audio file",
-          2.9699999999999998
-        ]
-      ],
-      "error": null,
+      "status": "ERROR",
+      "failure_category": "error",
+      "generated_sql": null,
+      "expected_columns": null,
+      "actual_columns": [],
+      "expected_rows": null,
+      "actual_rows": [],
+      "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01m1b89fyeek18rds7cckrh66h` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198182, Requested 2335. Please try again in 3m43.344s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
       "refusal": null
     },
     {

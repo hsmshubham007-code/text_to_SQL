@@ -88,7 +88,7 @@ $env:PYTHONPATH = (Get-Location).Path
 pytest -q
 ```
 
-Latest recorded local verification: **74 tests passed**. Rerun the tests after making changes to confirm the current result.
+Latest local verification: **77 tests passed**. This result was confirmed after the latest SQL safety changes.
 
 Run the dataset and reference-query audits separately when needed:
 

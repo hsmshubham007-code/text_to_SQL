@@ -93,6 +93,23 @@ def evaluate_question(item):
             result["failure_category"] = "unexpected_refusal"
             return result
 
+        generated_sql = result["generated_sql"]
+        if not isinstance(generated_sql, str) or not generated_sql.strip():
+            result["status"] = "FAIL"
+            result["failure_category"] = "missing_sql"
+            result["error"] = "The agent returned no generated SQL."
+            return result
+
+        from src.sql_safety import validate_sql
+
+        try:
+            validate_sql(generated_sql)
+        except Exception as error:
+            result["status"] = "FAIL"
+            result["failure_category"] = "invalid_sql"
+            result["error"] = f"{type(error).__name__}: {error}"
+            return result
+
         expected = run_sql(item["expected_sql"])
         result["expected_columns"] = expected["columns"]
         result["expected_rows"] = expected["rows"]

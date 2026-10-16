@@ -1,4 +1,4 @@
-"""Validate and safely execute read-only SQLite queries."""
+﻿"""Validate and safely execute read-only SQLite queries."""
 
 import re
 import sqlite3
@@ -18,11 +18,11 @@ def validate_sql(sql: str) -> str:
     if not sql or not sql.strip():
         raise ValueError("SQL query cannot be empty.")
 
-        # Reject malformed SQL keywords that are joined to the next token.
+    # Reject missing whitespace without rejecting the valid ASC keyword.
     if re.search(r"\bFROM(?=[A-Za-z_])", sql, re.IGNORECASE):
         raise ValueError("Invalid SQL syntax: missing space after FROM.")
 
-    if re.search(r"\bAS(?=[A-Za-z_])", sql, re.IGNORECASE):
+    if re.search(r"\bAS(?!C\b)(?=[A-Za-z_])", sql, re.IGNORECASE):
         raise ValueError("Invalid SQL syntax: missing space after AS.")
 
     try:
@@ -35,11 +35,8 @@ def validate_sql(sql: str) -> str:
 
     query = statements[0]
 
-    if not isinstance(query, exp.Query):
-        raise ValueError("Only read-only SELECT queries are allowed.")
-
     if not isinstance(query, (exp.Select, exp.Union)):
-        raise ValueError("Only SELECT queries are allowed.")
+        raise ValueError("Only read-only SELECT queries are allowed.")
 
     if query.find(exp.Into):
         raise ValueError("SELECT INTO is not allowed.")

@@ -189,7 +189,6 @@ def generate_sql(
 
     return validate_sql(sql)
 
-
 def ask_database(question: str) -> dict:
     """Generate, validate, and execute SQL with one bounded repair attempt."""
     if not question or not question.strip():
